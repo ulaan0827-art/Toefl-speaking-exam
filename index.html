@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>TOEFL Speaking Mock Test</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 700px;
+      margin: 40px auto;
+      line-height: 1.6;
+    }
+    h1 {
+      text-align: center;
+    }
+    .question {
+      margin-top: 30px;
+    }
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      margin-top: 10px;
+    }
+    audio {
+      margin-top: 10px;
+      width: 100%;
+    }
+  </style>
+</head>
+
+<body>
+  <h1>TOEFL Speaking Test</h1>
+
+  <div class="question">
+    <h2>Part 1: Listen & Repeat</h2>
+    <p>Listen to the sentence and repeat it.</p>
+    <audio controls>
+      <source src="" type="audio/mpeg">
+      Your browser does not support audio.
+    </audio>
+    <br>
+    <button onclick="startRecording()">Start Recording</button>
+  </div>
+
+  <div class="question">
+    <h2>Part 2: Interview Question</h2>
+    <p>Describe a teacher who has influenced you.</p>
+    <button onclick="startRecording()">Start Recording</button>
+  </div>
+
+  <script>
+    function startRecording() {
+      alert("🎤 Recording started (demo version)");
+    }
+  </script>
+
+</body>
+</html>
