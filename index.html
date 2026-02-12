@@ -52,7 +52,7 @@
   <source src="audio/part1_sentence4.mp3.mp3" type="audio/mpeg">
 </audio>
 
-    <button onclick="startRecording()">Start Recording</button>
+    <button onclick="startRecording(event)">Start Recording</button>
   </div>
 
  <div class="question">
@@ -86,7 +86,7 @@
     </div>
   </div>
 
-  <button onclick="startRecording()" style="margin-top: 20px;">Start Recording</button>
+  <button onclick="startRecording(event)" style="margin-top: 20px;">Start Recording</button>
 </div>
  <script>
   // 全局变量
@@ -95,7 +95,10 @@
   let recordingStream = null;
 
   // Part 1 & Part 2 共用的录音函数
-  async function startRecording() {
+  async function startRecording(event) {
+    // ✅ 修复：确保 event 存在
+    if (!event) event = window.event;
+    
     try {
       // 1. 检查浏览器兼容性
       if (!navigator.mediaDevices || !window.MediaRecorder) {
@@ -160,7 +163,7 @@
       mediaRecorder.start();
       console.log('🎤 录音已开始');
       
-      // 7. 改变按钮状态
+      // 7. 改变按钮状态 - ✅ 现在 event.target 可用！
       const currentBtn = event.target;
       if (currentBtn) {
         currentBtn.textContent = '🔴 录音中...';
@@ -197,7 +200,7 @@
       console.log('⏹️ 录音已停止');
       
       // 恢复按钮状态
-      const recordBtns = document.querySelectorAll('button[onclick="startRecording()"]');
+      const recordBtns = document.querySelectorAll('button[onclick="startRecording(event)"]');
       recordBtns.forEach(btn => {
         btn.textContent = 'Start Recording';
         btn.style.background = '';
