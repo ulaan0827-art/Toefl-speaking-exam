@@ -2,31 +2,369 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>TOEFL Speaking Mock Test</title>
+  <title>TOEFL Mock Exam - Full Test</title>
   <style>
     body {
       font-family: Arial, sans-serif;
-      max-width: 700px;
+      max-width: 900px;
       margin: 40px auto;
       line-height: 1.6;
+      padding: 0 20px;
+      background: #fafafa;
     }
-    h1 {
+    
+    /* 考试头部 */
+    .exam-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: white;
+      padding: 15px 25px;
+      border-radius: 12px;
+      margin-bottom: 30px;
+      position: sticky;
+      top: 20px;
+      z-index: 100;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    
+    .timer-container {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+    
+    .timer {
+      font-size: 32px;
+      font-weight: bold;
+      color: #1976D2;
+      background: #e8f4fd;
+      padding: 8px 25px;
+      border-radius: 50px;
+      font-family: monospace;
+      letter-spacing: 2px;
+    }
+    
+    .timer.warning {
+      color: #ff4444;
+      background: #ffe8e8;
+      animation: pulse 1s infinite;
+    }
+    
+    @keyframes pulse {
+      0% { opacity: 1; }
+      50% { opacity: 0.7; }
+      100% { opacity: 1; }
+    }
+    
+    .status-badge {
+      background: #4CAF50;
+      color: white;
+      padding: 6px 16px;
+      border-radius: 30px;
+      font-size: 14px;
+      font-weight: 500;
+    }
+    
+    .status-badge.reading {
+      background: #2196F3;
+    }
+    
+    .status-badge.speaking {
+      background: #9C27B0;
+    }
+    
+    .status-badge.writing {
+      background: #FF9800;
+    }
+    
+    .status-badge.warning {
+      background: #ff9800;
+    }
+    
+    .status-badge.terminated {
+      background: #f44336;
+    }
+    
+    .status-badge.waiting {
+      background: #9e9e9e;
+    }
+    
+    /* 页面显示控制 */
+    #rulesPage, #readingIntroPage, #module1Intro, #module1Page, 
+    #module2Intro, #module2Page, #speakingPage, #writingIntroPage, 
+    #writingPage, #writingEmailPage, #writingDiscussionPage {
+      display: none;
+    }
+    
+    #rulesPage {
+      display: block;
+    }
+    
+    /* 考试概览卡片 */
+    .exam-overview {
+      background: white;
+      border-radius: 16px;
+      padding: 30px;
+      margin-bottom: 30px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+    
+    .exam-overview h2 {
+      margin-top: 0;
+      color: #333;
+      border-bottom: 2px solid #f0f0f0;
+      padding-bottom: 15px;
+    }
+    
+    .structure-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 20px 0;
+    }
+    
+    .structure-table th {
+      background: #f5f5f5;
+      padding: 12px;
+      text-align: left;
+      font-weight: 600;
+      color: #1976D2;
+    }
+    
+    .structure-table td {
+      padding: 12px;
+      border-bottom: 1px solid #eee;
+    }
+    
+    .structure-table tr:last-child td {
+      border-bottom: none;
+    }
+    
+    .structure-table tr:hover {
+      background: #f9f9f9;
+    }
+    
+    .highlight {
+      background: #e8f4fd;
+      font-weight: bold;
+    }
+    
+    .total-row {
+      background: #f0f7ff;
+      font-weight: bold;
+    }
+    
+    /* 开始考试按钮 */
+    .start-exam-btn {
+      background: #4CAF50;
+      color: white;
+      border: none;
+      padding: 15px 40px;
+      font-size: 18px;
+      border-radius: 50px;
+      cursor: pointer;
+      transition: all 0.3s;
+      margin: 20px 0;
+      box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3);
+    }
+    
+    .start-exam-btn:hover {
+      background: #45a049;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(76, 175, 80, 0.4);
+    }
+    
+    /* 模块导航按钮 */
+    .nav-buttons {
+      display: flex;
+      justify-content: space-between;
+      margin: 30px 0;
+    }
+    
+    .nav-btn {
+      padding: 12px 30px;
+      background: #2196F3;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+    
+    .nav-btn:hover:not(:disabled) {
+      background: #1976D2;
+    }
+    
+    .nav-btn:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+    }
+    
+    /* 警告弹窗 */
+    .warning-modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0,0,0,0.5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+    }
+    
+    .warning-content {
+      background: white;
+      padding: 30px;
+      border-radius: 16px;
+      max-width: 400px;
       text-align: center;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.2);
     }
+    
+    .warning-content.warning {
+      border-top: 4px solid #ff9800;
+    }
+    
+    .warning-content.terminated {
+      border-top: 4px solid #f44336;
+    }
+    
+    .warning-content button {
+      margin-top: 20px;
+      padding: 10px 30px;
+      background: #2196F3;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    
+    .hidden {
+      display: none !important;
+    }
+    
+    /* 考试部分样式 */
+    .section {
+      background: white;
+      border-radius: 16px;
+      padding: 25px;
+      margin-bottom: 30px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+    
+    .section h2 {
+      margin-top: 0;
+      color: #1976D2;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 2px solid #f0f0f0;
+      padding-bottom: 15px;
+      margin-bottom: 20px;
+    }
+    
+    .task-description {
+      background: #e8f4fd;
+      padding: 15px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+    }
+    
+    .task-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 20px 0;
+    }
+    
+    .task-table th, .task-table td {
+      border: 1px solid #ddd;
+      padding: 12px;
+      text-align: left;
+    }
+    
+    .task-table th {
+      background: #f5f5f5;
+    }
+    
+    .question-item {
+      margin: 20px 0;
+      padding: 20px;
+      background: #f9f9f9;
+      border-radius: 12px;
+      border-left: 4px solid #2196F3;
+    }
+    
+    .question-number {
+      font-weight: bold;
+      color: #1976D2;
+      margin-bottom: 10px;
+      font-size: 16px;
+    }
+    
+    .passage {
+      background: white;
+      padding: 15px;
+      border-radius: 8px;
+      border: 1px solid #e0e0e0;
+      margin: 15px 0;
+    }
+    
+    .email {
+      background: #f0f7ff;
+      padding: 15px;
+      border-radius: 8px;
+      font-family: monospace;
+      margin: 15px 0;
+    }
+    
+    .options {
+      margin: 15px 0;
+    }
+    
+    .option {
+      margin: 8px 0;
+    }
+    
+    input[type="text"], input[type="radio"] {
+      margin-right: 8px;
+    }
+    
+    .fill-blank {
+      font-size: 18px;
+      line-height: 2;
+    }
+    
+    .fill-blank input {
+      width: 60px;
+      padding: 4px;
+      margin: 0 2px;
+    }
+    
+    /* 口语部分样式 - 从你的代码继承 */
     .question {
       margin-top: 30px;
     }
+    
     button {
       padding: 10px 20px;
       font-size: 16px;
       margin-top: 10px;
     }
+    
     audio {
       margin-top: 10px;
       width: 100%;
     }
     
-    /* 考试规则折叠面板样式 */
+    /* 考试规则折叠面板 */
     .rules-container {
       margin-bottom: 30px;
       border: 1px solid #e0e0e0;
@@ -74,61 +412,6 @@
       display: block;
     }
     
-    /* 规则内容样式 */
-    .rules-content h3 {
-      margin-top: 0;
-      color: #333;
-      font-size: 20px;
-    }
-    
-    .rules-content h4 {
-      margin: 20px 0 10px;
-      color: #1976D2;
-      font-size: 18px;
-    }
-    
-    .rules-content h4:first-of-type {
-      margin-top: 0;
-    }
-    
-    .rules-content ul {
-      margin: 10px 0;
-      padding-left: 20px;
-    }
-    
-    .rules-content li {
-      margin: 5px 0;
-    }
-    
-    .rules-content p {
-      margin: 10px 0;
-    }
-    
-    .rules-content hr {
-      border: none;
-      border-top: 1px solid #eee;
-      margin: 20px 0;
-    }
-    
-    /* 页脚样式 */
-    .footer {
-      margin-top: 40px;
-      padding-top: 20px;
-      border-top: 1px solid #eee;
-      text-align: center;
-      color: #666;
-    }
-    
-    .footer a {
-      color: #2196F3;
-      text-decoration: none;
-    }
-    
-    .footer a:hover {
-      text-decoration: underline;
-    }
-    
-    /* 新增：关闭按钮样式 */
     .close-rules {
       text-align: right;
       margin-bottom: 15px;
@@ -146,237 +429,1006 @@
     .close-rules button:hover {
       color: #1976D2;
     }
+    
+    /* 写作部分样式 */
+    .word-count {
+      text-align: right;
+      color: #666;
+      font-size: 14px;
+      margin-top: 5px;
+    }
+    
+    textarea {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      font-family: inherit;
+      font-size: 14px;
+      margin-top: 10px;
+      min-height: 150px;
+    }
+    
+    /* 页脚 */
+    .footer {
+      margin-top: 40px;
+      padding-top: 20px;
+      border-top: 1px solid #eee;
+      text-align: center;
+      color: #666;
+    }
   </style>
 </head>
 
 <body>
-
-  <!-- 删除原来的 exam-info，替换为折叠面板 -->
-  <div class="rules-container">
-    <div class="rules-header" onclick="toggleRules()">
-      <span>📋 点击查看考试规则和说明</span>
-      <span class="toggle-icon" id="toggleIcon">▼</span>
+  <!-- 考试头部 - 始终显示 -->
+  <div class="exam-header">
+    <div>
+      <span class="status-badge" id="statusBadge">📋 阅读规则</span>
     </div>
-    <div class="rules-content" id="rulesContent">
-      <div class="close-rules">
-        <button onclick="toggleRules()">✕ 关闭</button>
-      </div>
-      
-      <h3>TOEFL Speaking Online Exam System</h3>
-      <p>在线托福口语模考系统，用于教师组织限时口语考试并自动收集学生录音。</p>
-      
-      <hr>
-      
-      <h4>👩‍🏫 教师信息</h4>
-      <ul>
-        <li><strong>教师邮箱：</strong>ulaan0827@gmail.com</li>
-        <li><strong>接收邮箱：</strong>ulaan0827@gmail.com</li>
-      </ul>
-      <p>学生提交的录音将自动发送至上述邮箱。</p>
-      
-      <h4>⏰ 考试规则</h4>
-      <ul>
-        <li><strong>考试时长：</strong>8–10 分钟（可调整）</li>
-        <li><strong>屏幕切换规则：</strong>
-          <ul>
-            <li>第 1 次：警告</li>
-            <li>第 2 次：自动交卷</li>
-          </ul>
-        </li>
-      </ul>
-      <p>请确保学生在考试开始前了解以上规则。</p>
-      
-      <h4>🎧 考试结构（新托福口语题型）</h4>
-      <p>本考试采用新托福口语题型，共包含两个部分：</p>
-      
-      <h5>1. 听读模仿</h5>
-      <ul>
-        <li>学生听一段短句或短文</li>
-        <li>音频自动播放</li>
-        <li>学生重复所听到的内容</li>
-        <li>回答将被即时录音</li>
-      </ul>
-      
-      <h5>2. 面试问答</h5>
-      <ul>
-        <li>学生回答开放式面试问题</li>
-        <li>问题涉及：
-          <ul>
-            <li>个人经历</li>
-            <li>观点表达</li>
-            <li>简单论述</li>
-          </ul>
-        </li>
-        <li>限时作答</li>
-        <li>所有回答自动录音</li>
-      </ul>
-      <p>⏱️ 两部分均在总考试时间内完成。</p>
-      
-      <h4>👨‍🎓 学生须知</h4>
-      <ol>
-        <li>使用 <strong>Google Chrome 浏览器</strong></li>
-        <li>考前检查：
-          <ul>
-            <li>麦克风权限已开启</li>
-            <li>网络连接稳定</li>
-          </ul>
-        </li>
-        <li>点击教师提供的考试链接</li>
-        <li>仔细阅读屏幕提示</li>
-        <li>请<strong>勿</strong>：
-          <ul>
-            <li>刷新页面</li>
-            <li>切换浏览器标签</li>
-            <li>打开其他应用</li>
-          </ul>
-        </li>
-      </ol>
-      <p>⚠️ 屏幕切换将触发警告或自动交卷。</p>
-      
-      <h4>📤 考试结束后</h4>
-      <ul>
-        <li>所有录音自动上传</li>
-        <li>教师将通过邮件收到音频文件</li>
-        <li>学生无需手动提交任何内容</li>
-      </ul>
-      
-      <h4>🛠️ 技术说明（供教师参考）</h4>
-      <ul>
-        <li>前端：网页版考试界面</li>
-        <li>后端：处理录音上传及邮件发送</li>
-        <li>仓库结构：
-          <ul>
-            <li><code>/frontend</code> – 学生考试界面</li>
-            <li><code>/backend</code> – 服务端及邮件逻辑</li>
-          </ul>
-        </li>
-      </ul>
-      <p>考试当天无需操作命令行。</p>
-      
-      <h4>✅ 考前检查清单</h4>
-      <ul style="list-style-type: none; padding-left: 0;">
-        <li>☐ 测试考试链接</li>
-        <li>☐ 测试麦克风</li>
-        <li>☐ 确认考试时长</li>
-        <li>☐ 向学生说明考试规则</li>
-      </ul>
-      
-      <h4>📌 联系方式</h4>
-      <p>考试中如遇技术问题，请联系教师。</p>
-      <p>祝考试顺利！</p>
+    <div class="timer-container">
+      <div class="timer" id="timer">02:00:00</div>
     </div>
   </div>
 
-  <h1>TOEFL Speaking Test</h1>
-
-  <div class="question">
-    <h2>Part 1: Listen & Repeat</h2>
-    <p>Listen to the sentence and repeat it.</p>
-
-    <audio controls>
-      <source src="audio/part1_sentence1.mp3.mp3" type="audio/mpeg">
-    </audio>
-
-    <audio controls>
-      <source src="audio/part1_sentence2.mp3.mp3" type="audio/mpeg">
-    </audio>
-
-    <audio controls>
-      <source src="audio/part1_sentence3.mp3.mp3" type="audio/mpeg">
-    </audio>
-
-    <audio controls>
-      <source src="audio/part1_sentence4.mp3.mp3" type="audio/mpeg">
-    </audio>
-
-    <button onclick="startRecording(event)">Start Recording</button>
+  <!-- 警告弹窗 -->
+  <div id="warningModal" class="warning-modal hidden">
+    <div class="warning-content" id="warningContent">
+      <h2 id="warningTitle">⚠️ 第一次警告</h2>
+      <p id="warningMessage">您已切换屏幕。这是第一次警告，再次切换将自动交卷。</p>
+      <button onclick="closeWarningModal()">我知道了</button>
+    </div>
   </div>
 
-  <div class="question">
-    <h2>Part 2: Interview Question</h2>
-    <p>Describe a teacher who has influenced you. — Watch student responses:</p>
+  <!-- 规则页面 -->
+  <div id="rulesPage">
+    <div class="exam-overview">
+      <h2>📋 新托福考试结构</h2>
+      <p>本模考系统严格按照新托福考试格式设计，总时长约2小时。请仔细阅读以下考试结构：</p>
+      
+      <table class="structure-table">
+        <thead>
+          <tr>
+            <th>部分</th>
+            <th>顺序</th>
+            <th>任务类型</th>
+            <th>题目数量</th>
+            <th>预估时间</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="highlight">
+            <td><strong>📖 阅读</strong></td>
+            <td>1</td>
+            <td>Complete the Words; Read in Daily Life; Read an Academic Passage</td>
+            <td>35题</td>
+            <td>约27分钟</td>
+          </tr>
+          <tr>
+            <td><strong>🎤 口语</strong></td>
+            <td>2</td>
+            <td>Listen and Repeat; Take an Interview</td>
+            <td>11题</td>
+            <td>约8分钟</td>
+          </tr>
+          <tr>
+            <td><strong>✍️ 写作</strong></td>
+            <td>3</td>
+            <td>Build a Sentence; Write an Email; Write for an Academic Discussion</td>
+            <td>12题</td>
+            <td>约23分钟</td>
+          </tr>
+          <tr>
+            <td><strong>🎧 听力</strong></td>
+            <td>4</td>
+            <td>Listen and Choose a Response; Listen to a Conversation; Listen to an Announcement; Listen to an Academic Talk</td>
+            <td>35题</td>
+            <td>约27分钟</td>
+          </tr>
+          <tr class="total-row">
+            <td colspan="3"><strong>总计</strong></td>
+            <td><strong>93题</strong></td>
+            <td><strong>约2小时</strong></td>
+          </tr>
+        </tbody>
+      </table>
+      
+      <div style="text-align: center;">
+        <button class="start-exam-btn" onclick="startExam()">✅ 我已阅读规则，开始考试</button>
+        <p style="color: #999; font-size: 14px; margin-top: 10px;">点击开始后，将进入阅读部分</p>
+      </div>
+    </div>
+  </div>
 
-    <div style="display: flex; flex-wrap: wrap; gap: 20px; margin-top: 20px;">
-      <div style="flex: 1 1 calc(50% - 20px); background: #f9f9f9; border-radius: 12px; padding: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.05);">
-        <video width="100%" height="180" controls style="border-radius: 8px;">
-          <source src="q1-interview.mp4" type="video/mp4">
-        </video>
-        <p style="font-weight: bold; margin-top: 10px;">📌 Question 1</p>
+  <!-- ========== 阅读部分 ========== -->
+  <!-- 阅读介绍 -->
+  <div id="readingIntroPage">
+    <div class="exam-overview">
+      <h2>📖 阅读部分</h2>
+      
+      <div class="task-description">
+        <p>在阅读部分，你需要回答35-50道题，以展示你对学术和非学术英语文本的理解能力。共有三种任务类型：</p>
       </div>
-      <div style="flex: 1 1 calc(50% - 20px); background: #f9f9f9; border-radius: 12px; padding: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.05);">
-        <video width="100%" height="180" controls style="border-radius: 8px;">
-          <source src="q2-interview.mp4" type="video/mp4">
-        </video>
-        <p style="font-weight: bold; margin-top: 10px;">📌 Question 2</p>
+      
+      <table class="task-table">
+        <tr>
+          <th>任务类型</th>
+          <th>描述</th>
+        </tr>
+        <tr>
+          <td><strong>Complete the Words</strong></td>
+          <td>Fill in the missing letters in a paragraph.</td>
+        </tr>
+        <tr>
+          <td><strong>Read in Daily Life</strong></td>
+          <td>Answer questions about everyday reading material.</td>
+        </tr>
+        <tr>
+          <td><strong>Read an Academic Passage</strong></td>
+          <td>Answer questions about an academic passages.</td>
+        </tr>
+      </table>
+      
+      <div style="text-align: center; margin: 30px 0;">
+        <button class="nav-btn" onclick="showModule1Intro()">进入 Module 1 →</button>
       </div>
-      <div style="flex: 1 1 calc(50% - 20px); background: #f9f9f9; border-radius: 12px; padding: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.05);">
-        <video width="100%" height="180" controls style="border-radius: 8px;">
-          <source src="q3-interview.mp4" type="video/mp4">
-        </video>
-        <p style="font-weight: bold; margin-top: 10px;">📌 Question 3</p>
+    </div>
+  </div>
+
+  <!-- Module 1 介绍 -->
+  <div id="module1Intro">
+    <div class="exam-overview">
+      <h2>Module 1</h2>
+      
+      <div class="task-description">
+        <p>• 屏幕上的计时器会显示你完成Module 1的剩余时间。</p>
+        <p>• 你可以使用"下一题"和"上一题"在同一模块内切换题目。</p>
+        <p>• <strong>一旦你开始Module 2，将无法返回Module 1。</strong></p>
       </div>
-      <div style="flex: 1 1 calc(50% - 20px); background: #f9f9f9; border-radius: 12px; padding: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.05);">
-        <video width="100%" height="180" controls style="border-radius: 8px;">
-          <source src="q4-interview.mp4" type="video/mp4">
-        </video>
-        <p style="font-weight: bold; margin-top: 10px;">📌 Question 4</p>
+      
+      <div style="text-align: center; margin: 30px 0;">
+        <button class="nav-btn" onclick="showModule1()">开始 Module 1 →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Module 1 题目 -->
+  <div id="module1Page">
+    <h1>📖 阅读 Module 1</h1>
+    
+    <!-- 第1-10题：Complete the Words -->
+    <div class="section">
+      <h2>Complete the Words (1-10)</h2>
+      <p class="task-description">Fill in the missing letters in the paragraph.</p>
+      
+      <div class="question-item">
+        <div class="question-number">Questions 1-10</div>
+        <div class="passage">
+          <p>We know from drawings that have been preserved in caves for over 10,000 years that early humans performed dances as a group activity. We mi<u>__</u><u>_</u> think th<u>_</u> prehistoric peo<u>_</u><u>_</u> concentrated on<u>_</u> on ba<u>_</u><u>_</u> survival. How<u>_</u><u>_</u> it i<u>_</u> clear fr<u>_</u><u>_</u> the rec<u>_</u><u>_</u> that dan<u>_</u><u>_</u><u>_</u> was important to them. They recorded more drawings of dances than of any other group activity. Dances served various purposes, including ritualistic communication with the divine, storytelling, and social cohesion.</p>
+        </div>
       </div>
     </div>
 
-    <button onclick="startRecording(event)" style="margin-top: 20px;">Start Recording</button>
+    <!-- 第11-12题：Read a notice -->
+    <div class="section">
+      <h2>Read a notice (11-12)</h2>
+      
+      <div class="question-item">
+        <div class="question-number">Questions 11-12</div>
+        <div class="email">
+          <h3>Municipal Charter</h3>
+          <p>Sign up for paperless billing statements today.</p>
+          <p>Safe, convenient, easy. Enroll in paperless billing to receive monthly savings account statements in an electronic PDF document. Access your Municipal Charter account through the mobile app and select account preferences in the upper right-hand corner to enroll.</p>
+        </div>
+        
+        <div class="question-number">11. What type of business issued the notice?</div>
+        <div class="options">
+          <div class="option"><input type="radio" name="q11"> A. An Internet provider</div>
+          <div class="option"><input type="radio" name="q11"> B. A computer company</div>
+          <div class="option"><input type="radio" name="q11"> C. A paper company</div>
+          <div class="option"><input type="radio" name="q11"> D. A bank</div>
+        </div>
+        
+        <div class="question-number">12. How can customers enroll in paperless billing?</div>
+        <div class="options">
+          <div class="option"><input type="radio" name="q12"> A. By visiting a Municipal Charter office</div>
+          <div class="option"><input type="radio" name="q12"> B. By accessing the Municipal Charter website</div>
+          <div class="option"><input type="radio" name="q12"> C. By using the Municipal Charter app</div>
+          <div class="option"><input type="radio" name="q12"> D. By calling a Municipal Charter customer service representative</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 第13-15题：Read a social media post -->
+    <div class="section">
+      <h2>Read a social media post (13-15)</h2>
+      
+      <div class="question-item">
+        <div class="question-number">Questions 13-15</div>
+        <div class="passage">
+          <h3>Sofia Baker</h3>
+          <p>Every Saturday, our local farmer's market is the place to be! Fresh fruits, veggies, homemade goodies, and unique crafts await you. The Thompson family's organic produce is a must-try, known for its quality and cordial service. Their stall is always bustling with customers eager to buy fresh, pesticide-free vegetables from the welcoming staff.</p>
+          <p>Don't miss the bakery stall—get there early for the best bread and pastries, including gluten-free and vegan options. The smell of freshly baked goods fills the air, and these treats sell out fast!</p>
+          <p>In addition to food, the market sells handmade crafts like jewelry, pottery, and textiles. These unique items make perfect gifts and support local artisans. Plus, enjoy live music while you shop. Talented local musicians help create a vibrant atmosphere, and the community spirit makes it a delightful experience for all. See you there!</p>
+        </div>
+        
+        <div class="question-number">13. What is the main purpose of the post?</div>
+        <div class="options">
+          <div class="option"><input type="radio" name="q13"> A. To explain the benefits of organic farming</div>
+          <div class="option"><input type="radio" name="q13"> B. To describe the variety of products available at the farmer's market</div>
+          <div class="option"><input type="radio" name="q13"> C. To compare different farmer's markets in the area</div>
+          <div class="option"><input type="radio" name="q13"> D. To offer advice on starting a stall at the farmer's market</div>
+        </div>
+        
+        <div class="question-number">14. What reason is given for the popularity of the Thompson family's stall?</div>
+        <div class="options">
+          <div class="option"><input type="radio" name="q14"> A. They offer cooking tips and recipes.</div>
+          <div class="option"><input type="radio" name="q14"> B. They offer the lowest prices at the market.</div>
+          <div class="option"><input type="radio" name="q14"> C. They provide friendly service and excellent products.</div>
+          <div class="option"><input type="radio" name="q14"> D. They have a beautiful and well-decorated stall.</div>
+        </div>
+        
+        <div class="question-number">15. Why do customers go to the bakery stall early?</div>
+        <div class="options">
+          <div class="option"><input type="radio" name="q15"> A. To get the free samples given in mornings</div>
+          <div class="option"><input type="radio" name="q15"> B. To get freshly baked bread and pastries before they are gone</div>
+          <div class="option"><input type="radio" name="q15"> C. To meet the famous baker</div>
+          <div class="option"><input type="radio" name="q15"> D. To take advantage of early morning discounts</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 第16-20题：Academic Passage -->
+    <div class="section">
+      <h2>Read an Academic Passage (16-20)</h2>
+      
+      <div class="question-item">
+        <div class="question-number">Questions 16-20</div>
+        <div class="passage">
+          <h3>The Mirror Test</h3>
+          <p>Very young children cannot recognize themselves in a mirror; they usually achieve this milestone around 18 months of age. The ability to recognize oneself in the mirror is considered to be a key component of self-awareness and consciousness for humans. But what about animals?</p>
+          <p>For many years, scientists have known that members of the great ape family could recognize themselves in mirrors. They measured this by the "mirror test," which involved putting a colored mark on an ape's body, and then showing the ape its reflection in a mirror. If the ape tried to remove the mark on its own body, the scientists knew that the ape was recognizing its reflection.</p>
+          <p>Apes are close relatives of humans, but in recent years, scientists have discovered that other animals also pass the "mirror test." Elephants and dolphins have shown signs of self-recognition. These, like apes, are highly intelligent animals. But in a more recent experiment, a type of fish called the cleaner fish tried to scrape a mark off its body when it saw itself in the mirror. This suggests that even less intelligent animals may possess more self-awareness than previously suspected.</p>
+        </div>
+        
+        <div class="question-number">16. What is the passage mainly about?</div>
+        <div class="options">
+          <div class="option"><input type="radio" name="q16"> A. Stages of early childhood development</div>
+          <div class="option"><input type="radio" name="q16"> B. Research on animal cognition</div>
+          <div class="option"><input type="radio" name="q16"> C. Differences between apes, elephants, and dolphins</div>
+          <div class="option"><input type="radio" name="q16"> D. Recent experiments on fish</div>
+        </div>
+        
+        <div class="question-number">17. The word "milestone" in the first sentence is closest in meaning to</div>
+        <div class="options">
+          <div class="option"><input type="radio" name="q17"> A. accomplishment</div>
+          <div class="option"><input type="radio" name="q17"> B. distance</div>
+          <div class="option"><input type="radio" name="q17"> C. weight</div>
+          <div class="option"><input type="radio" name="q17"> D. discovery</div>
+        </div>
+        
+        <div class="question-number">18. Why did scientists put colored marks on animals' bodies?</div>
+        <div class="options">
+          <div class="option"><input type="radio" name="q18"> A. It made it possible to track the animals' movements.</div>
+          <div class="option"><input type="radio" name="q18"> B. It helped them determine whether the animals recognized themselves.</div>
+          <div class="option"><input type="radio" name="q18"> C. It made it easier to tell the animals apart.</div>
+          <div class="option"><input type="radio" name="q18"> D. It showed whether some animals can detect color differences.</div>
+        </div>
+        
+        <div class="question-number">19. According to the passage, all of the following are true about elephants EXCEPT:</div>
+        <div class="options">
+          <div class="option"><input type="radio" name="q19"> A. They can recognize themselves in mirrors.</div>
+          <div class="option"><input type="radio" name="q19"> B. They are highly intelligent animals.</div>
+          <div class="option"><input type="radio" name="q19"> C. They possess qualities in common with apes.</div>
+          <div class="option"><input type="radio" name="q19"> D. They understand certain signs from other animals.</div>
+        </div>
+        
+        <div class="question-number">20. Why does the author mention cleaner fish?</div>
+        <div class="options">
+          <div class="option"><input type="radio" name="q20"> A. To suggest that a wide range of animals may possess self-awareness</div>
+          <div class="option"><input type="radio" name="q20"> B. To imply that ocean animals are highly intelligent</div>
+          <div class="option"><input type="radio" name="q20"> C. To demonstrate a flaw in a recent experiment</div>
+          <div class="option"><input type="radio" name="q20"> D. To provide an example of an animal that does not recognize itself</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="nav-buttons">
+      <div></div>
+      <button class="nav-btn" onclick="showModule2Intro()">完成 Module 1，进入 Module 2 →</button>
+    </div>
   </div>
-  
-  <!-- 修改底部链接，改为展开规则面板 -->
+
+  <!-- Module 2 介绍 -->
+  <div id="module2Intro">
+    <div class="exam-overview">
+      <h2>Module 2</h2>
+      
+      <div class="task-description">
+        <p>• 屏幕上的计时器会显示你完成Module 2的剩余时间。</p>
+        <p>• 你可以使用"下一题"和"上一题"在同一模块内切换题目。</p>
+        <p>• <strong>注意：这是阅读部分的最后一个模块。</strong></p>
+      </div>
+      
+      <div style="text-align: center; margin: 30px 0;">
+        <button class="nav-btn" onclick="showModule2()">开始 Module 2 →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Module 2 题目 -->
+  <div id="module2Page">
+    <h1>📖 阅读 Module 2</h1>
+    
+    <!-- 第1-10题：Complete the Words -->
+    <div class="section">
+      <h2>Complete the Words (1-10)</h2>
+      <p class="task-description">Fill in the missing letters in the paragraph.</p>
+      
+      <div class="question-item">
+        <div class="question-number">Questions 1-10</div>
+        <div class="passage">
+          <p>The human brain is a complex organ responsible for controlling all bodily functions and enabling thought, emotion, and memory. It i_ divided in_ several reg_ _ _ , each wi_ specific ro_ _ _ . The cerebrum, i_ largest pa_ _ , is invo_ _ _ in cogn_ _ _ _ _ _ _ _ functions su_ _ as reasoning, planning, and language. The cerebellum coordinates movement and balance, while the brainstem controls vital bodily functions like breathing and heart rate. Together, they enable the brain to perform its various tasks.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 第11-12题：Read an email -->
+    <div class="section">
+      <h2>Read an email (11-12)</h2>
+      
+      <div class="question-item">
+        <div class="email">
+          <p><strong>To:</strong> edward56L@dmail.com</p>
+          <p><strong>From:</strong> artforeveryone@dmail.com</p>
+          <p><strong>Date:</strong> 10/09/2025</p>
+          <p><strong>Subject:</strong> Art Workshop Reservation Confirmation</p>
+          <hr>
+          <p>Dear Ms. Edwards,</p>
+          <p>The reservation for the art workshop that you made on September 10th has been confirmed. The workshop will take place on September 20th at 3:00 PM. All necessary arts supplies will be provided, but please bring your own apron or smock.</p>
+          <p>Best regards,<br>Laura Bennett</p>
+        </div>
+        
+        <div class="question-number">11. When is the date of the art workshop?</div>
+        <div class="options">
+          <div class="option"><input type="radio" name="m2q11"> A. September 10th</div>
+          <div class="option"><input type="radio" name="m2q11"> B. September 12th</div>
+          <div class="option"><input type="radio" name="m2q11"> C. September 20th</div>
+          <div class="option"><input type="radio" name="m2q11"> D. September 30th</div>
+        </div>
+        
+        <div class="question-number">12. What should Ms. Edwards bring to the workshop?</div>
+        <div class="options">
+          <div class="option"><input type="radio" name="m2q12"> A. A payment method</div>
+          <div class="option"><input type="radio" name="m2q12"> B. Extra paint</div>
+          <div class="option"><input type="radio" name="m2q12"> C. A protective garment</div>
+          <div class="option"><input type="radio" name="m2q12"> D. Proof of reservation</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 第13-15题：Read an email -->
+    <div class="section">
+      <h2>Read an email (13-15)</h2>
+      
+      <div class="question-item">
+        <div class="email">
+          <p><strong>To:</strong> nguyenbooklover@dmail.com</p>
+          <p><strong>From:</strong> part.gymworkers@dmail.com</p>
+          <p><strong>Subject:</strong> You're Invited – Bring Friends & Family to Our Grand Opening!</p>
+          <hr>
+          <p>Dear Ms. Nguyen,</p>
+          <p>We're excited to invite you—and your friends and family—to the grand opening of our new branch at 25 Orchid Street, happening next Monday. This event is a great opportunity to explore our state-of-the-art facility, featuring top-tier equipment, energizing group classes, and expert personal training.</p>
+          <p>This celebration, exclusively for our valued members and their guests, will include guided tours, live fitness demonstrations, and complimentary refreshments. It's the perfect chance to experience our community-focused approach to wellness and introduce others to a space designed for all fitness levels.</p>
+          <p>Bring your friends and family! We're offering a special one-day-only discount on memberships for all attendees.</p>
+          <p>For questions or to RSVP, contact our customer service team at 555-1234.</p>
+          <p>Warm regards,<br>John Parker</p>
+        </div>
+        
+        <div class="question-number">13. What is the main purpose of the email?</div>
+        <div class="options">
+          <div class="option"><input type="radio" name="m2q13"> A. To attract customers to a new fitness center</div>
+          <div class="option"><input type="radio" name="m2q13"> B. To provide Ms. Nguyen with an opportunity to provide expert personal training</div>
+          <div class="option"><input type="radio" name="m2q13"> C. To celebrate Ms. Nguyen's achievements in wellness</div>
+          <div class="option"><input type="radio" name="m2q13"> D. To announce a discount available to fitness-center members</div>
+        </div>
+        
+        <div class="question-number">14. What can be inferred about Ms. Nguyen's relationship with the fitness center?</div>
+        <div class="options">
+          <div class="option"><input type="radio" name="m2q14"> A. She helps the fitness center to organize activities.</div>
+          <div class="option"><input type="radio" name="m2q14"> B. She has already explored the new facility.</div>
+          <div class="option"><input type="radio" name="m2q14"> C. She is a member at one of the fitness center's other locations.</div>
+          <div class="option"><input type="radio" name="m2q14"> D. She is new to using fitness centers and exercise equipment.</div>
+        </div>
+        
+        <div class="question-number">15. The new fitness center is intended for use by which of the following groups of people?</div>
+        <div class="options">
+          <div class="option"><input type="radio" name="m2q15"> A. Expert personal trainers</div>
+          <div class="option"><input type="radio" name="m2q15"> B. Top-tier athletes</div>
+          <div class="option"><input type="radio" name="m2q15"> C. Existing fitness-center members</div>
+          <div class="option"><input type="radio" name="m2q15"> D. Community members of all fitness levels</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 第16-20题：Academic Passage -->
+    <div class="section">
+      <h2>Read an Academic Passage (16-20)</h2>
+      
+      <div class="question-item">
+        <div class="passage">
+          <h3>The Paradox of Choice</h3>
+          <p>The paradox of choice, a concept popularized by psychologist Barry Schwartz, suggests that more options can lead to less satisfaction. While the freedom to choose is fundamental to consumer culture, an overabundance of choices—from groceries to electronics—can overwhelm individuals, causing anxiety and decision fatigue. This paradox implies that the vast array of possibilities available today might actually diminish consumer contentment, as the fear of making the wrong choice looms large.</p>
+          <p>Research supports this notion. In an experiment, psychologist Sheena lyengar found that shoppers were more likely to purchase jam when offered 6 varieties instead of 24. The limited selection eased the decision process, reducing the pressure to find the 'perfect' option and making the experience more enjoyable. This phenomenon reveals that fewer choices can sometimes make consumers happier, which is a valuable insight for marketers and retailers aiming to boost satisfaction by curating their offerings.</p>
+          <p>The paradox also has broader implications. In individualistic cultures, where personal choice is highly valued, the burden of decision-making can be significant. Conversely, collectivist cultures, which often provide fewer choices, report higher levels of contentment. This dynamic suggests that understanding cultural differences in consumer psychology can help businesses optimize their product strategies and enhance overall well-being.</p>
+        </div>
+        
+        <div class="question-number">16. Which of the following best states a main idea of the passage?</div>
+        <div class="options">
+          <div class="option"><input type="radio" name="m2q16"> A. Effective marketing strategies focus on increasing product options.</div>
+          <div class="option"><input type="radio" name="m2q16"> B. Modern consumer culture is driven by a demand for fewer products.</div>
+          <div class="option"><input type="radio" name="m2q16"> C. Individualism enhances consumer contentment.</div>
+          <div class="option"><input type="radio" name="m2q16"> D. Limiting consumer choices can lead to higher satisfaction.</div>
+        </div>
+        
+        <div class="question-number">17. What is one effect of decision fatigue as mentioned in the passage?</div>
+        <div class="options">
+          <div class="option"><input type="radio" name="m2q17"> A. Desire to make the same choices as other consumers</div>
+          <div class="option"><input type="radio" name="m2q17"> B. Anxiety about making the wrong choice</div>
+          <div class="option"><input type="radio" name="m2q17"> C. Preference for consumer cultures</div>
+          <div class="option"><input type="radio" name="m2q17"> D. Enhanced freedom to choose</div>
+        </div>
+        
+        <div class="question-number">18. Why does the author mention Sheena lyengar's experiment?</div>
+        <div class="options">
+          <div class="option"><input type="radio" name="m2q18"> A. To highlight the effectiveness of marketing strategies</div>
+          <div class="option"><input type="radio" name="m2q18"> B. To explain the methodology used in consumer psychology</div>
+          <div class="option"><input type="radio" name="m2q18"> C. To provide evidence supporting the paradox of choice</div>
+          <div class="option"><input type="radio" name="m2q18"> D. To criticize the abundance of products in modern markets</div>
+        </div>
+        
+        <div class="question-number">19. The word "curating" in the passage is closest in meaning to</div>
+        <div class="options">
+          <div class="option"><input type="radio" name="m2q19"> A. eliminating</div>
+          <div class="option"><input type="radio" name="m2q19"> B. organizing</div>
+          <div class="option"><input type="radio" name="m2q19"> C. increasing</div>
+          <div class="option"><input type="radio" name="m2q19"> D. changing</div>
+        </div>
+        
+        <div class="question-number">20. What can be inferred about consumers in collectivist cultures?</div>
+        <div class="options">
+          <div class="option"><input type="radio" name="m2q20"> A. They tend to report lower levels of satisfaction.</div>
+          <div class="option"><input type="radio" name="m2q20"> B. They are more affected by the paradox of choice.</div>
+          <div class="option"><input type="radio" name="m2q20"> C. They generally have fewer choices available.</div>
+          <div class="option"><input type="radio" name="m2q20"> D. They prefer individual decision-making.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="nav-buttons">
+      <div></div>
+      <button class="nav-btn" onclick="showSpeaking()">完成阅读，进入口语部分 →</button>
+    </div>
+  </div>
+
+  <!-- ========== 口语部分 ========== -->
+  <div id="speakingPage">
+    <!-- 考试规则折叠面板 - 从你的代码继承 -->
+    <div class="rules-container">
+      <div class="rules-header" onclick="toggleRules()">
+        <span>📋 点击查看考试规则和说明</span>
+        <span class="toggle-icon" id="toggleIcon">▼</span>
+      </div>
+      <div class="rules-content" id="rulesContent">
+        <div class="close-rules">
+          <button onclick="toggleRules()">✕ 关闭</button>
+        </div>
+        
+        <h3>TOEFL Speaking Online Exam System</h3>
+        <p>在线托福口语模考系统，用于教师组织限时口语考试并自动收集学生录音。</p>
+        
+        <hr>
+        
+        <h4>👩‍🏫 教师信息</h4>
+        <ul>
+          <li><strong>教师邮箱：</strong>ulaan0827@gmail.com</li>
+          <li><strong>接收邮箱：</strong>ulaan0827@gmail.com</li>
+        </ul>
+        <p>学生提交的录音将自动发送至上述邮箱。</p>
+        
+        <h4>⏰ 考试规则</h4>
+        <ul>
+          <li><strong>考试时长：</strong>8–10 分钟（可调整）</li>
+          <li><strong>屏幕切换规则：</strong>
+            <ul>
+              <li>第 1 次：警告</li>
+              <li>第 2 次：自动交卷</li>
+            </ul>
+          </li>
+        </ul>
+        
+        <h4>🎧 考试结构（新托福口语题型）</h4>
+        <p>本考试采用新托福口语题型，共包含两个部分：</p>
+        
+        <h5>1. 听读模仿</h5>
+        <ul>
+          <li>学生听一段短句或短文</li>
+          <li>音频自动播放</li>
+          <li>学生重复所听到的内容</li>
+          <li>回答将被即时录音</li>
+        </ul>
+        
+        <h5>2. 面试问答</h5>
+        <ul>
+          <li>学生回答开放式面试问题</li>
+          <li>问题涉及：
+            <ul>
+              <li>个人经历</li>
+              <li>观点表达</li>
+              <li>简单论述</li>
+            </ul>
+          </li>
+          <li>限时作答</li>
+          <li>所有回答自动录音</li>
+        </ul>
+        <p>⏱️ 两部分均在总考试时间内完成。</p>
+        
+        <h4>👨‍🎓 学生须知</h4>
+        <ol>
+          <li>使用 <strong>Google Chrome 浏览器</strong></li>
+          <li>考前检查：
+            <ul>
+              <li>麦克风权限已开启</li>
+              <li>网络连接稳定</li>
+            </ul>
+          </li>
+          <li>点击教师提供的考试链接</li>
+          <li>仔细阅读屏幕提示</li>
+          <li>请<strong>勿</strong>：
+            <ul>
+              <li>刷新页面</li>
+              <li>切换浏览器标签</li>
+              <li>打开其他应用</li>
+            </ul>
+          </li>
+        </ol>
+        <p>⚠️ 屏幕切换将触发警告或自动交卷。</p>
+      </div>
+    </div>
+
+    <h1>TOEFL Speaking Test</h1>
+
+    <div class="question">
+      <h2>Part 1: Listen & Repeat</h2>
+      <p>Listen to the sentence and repeat it.</p>
+
+      <audio controls>
+        <source src="audio/part1_sentence1.mp3.mp3" type="audio/mpeg">
+      </audio>
+
+      <audio controls>
+        <source src="audio/part1_sentence2.mp3.mp3" type="audio/mpeg">
+      </audio>
+
+      <audio controls>
+        <source src="audio/part1_sentence3.mp3.mp3" type="audio/mpeg">
+      </audio>
+
+      <audio controls>
+        <source src="audio/part1_sentence4.mp3.mp3" type="audio/mpeg">
+      </audio>
+
+      <button onclick="startRecording(event)">Start Recording</button>
+    </div>
+
+    <div class="question">
+      <h2>Part 2: Interview Question</h2>
+      <p>Describe a teacher who has influenced you. — Watch student responses:</p>
+
+      <div style="display: flex; flex-wrap: wrap; gap: 20px; margin-top: 20px;">
+        <div style="flex: 1 1 calc(50% - 20px); background: #f9f9f9; border-radius: 12px; padding: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.05);">
+          <video width="100%" height="180" controls style="border-radius: 8px;">
+            <source src="q1-interview.mp4" type="video/mp4">
+          </video>
+          <p style="font-weight: bold; margin-top: 10px;">📌 Question 1</p>
+        </div>
+        <div style="flex: 1 1 calc(50% - 20px); background: #f9f9f9; border-radius: 12px; padding: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.05);">
+          <video width="100%" height="180" controls style="border-radius: 8px;">
+            <source src="q2-interview.mp4" type="video/mp4">
+          </video>
+          <p style="font-weight: bold; margin-top: 10px;">📌 Question 2</p>
+        </div>
+        <div style="flex: 1 1 calc(50% - 20px); background: #f9f9f9; border-radius: 12px; padding: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.05);">
+          <video width="100%" height="180" controls style="border-radius: 8px;">
+            <source src="q3-interview.mp4" type="video/mp4">
+          </video>
+          <p style="font-weight: bold; margin-top: 10px;">📌 Question 3</p>
+        </div>
+        <div style="flex: 1 1 calc(50% - 20px); background: #f9f9f9; border-radius: 12px; padding: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.05);">
+          <video width="100%" height="180" controls style="border-radius: 8px;">
+            <source src="q4-interview.mp4" type="video/mp4">
+          </video>
+          <p style="font-weight: bold; margin-top: 10px;">📌 Question 4</p>
+        </div>
+      </div>
+
+      <button onclick="startRecording(event)" style="margin-top: 20px;">Start Recording</button>
+    </div>
+
+    <div class="nav-buttons">
+      <div></div>
+      <button class="nav-btn" onclick="showWritingIntro()">完成口语，进入写作部分 →</button>
+    </div>
+  </div>
+
+  <!-- ========== 写作部分 ========== -->
+  <!-- 写作介绍 -->
+  <div id="writingIntroPage">
+    <div class="exam-overview">
+      <h2>✍️ 写作部分</h2>
+      
+      <div class="task-description">
+        <p>在写作部分，你需要回答12道题，以展示你的英语写作能力。共有三种任务类型：</p>
+      </div>
+      
+      <table class="task-table">
+        <tr>
+          <th>任务类型</th>
+          <th>描述</th>
+        </tr>
+        <tr>
+          <td><strong>Build a Sentence</strong></td>
+          <td>Create a grammatical sentence.</td>
+        </tr>
+        <tr>
+          <td><strong>Write an Email</strong></td>
+          <td>Write an email using information provided.</td>
+        </tr>
+        <tr>
+          <td><strong>Write for an Academic Discussion</strong></td>
+          <td>Participate in an online discussion.</td>
+        </tr>
+      </table>
+      
+      <div style="text-align: center; margin: 30px 0;">
+        <button class="nav-btn" onclick="showWriting()">开始写作 →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 写作题目页面 -->
+  <div id="writingPage">
+    <h1>✍️ 写作部分</h1>
+    
+    <!-- Build a Sentence 1-10题 -->
+    <div class="section">
+      <h2>Build a Sentence (1-10)</h2>
+      <p class="task-description">Create a grammatical sentence using the given words.</p>
+      
+      <div class="question-item">
+        <div class="question-number">1. The tour guides / who showed us around / the old city / were fantastic.</div>
+        <textarea placeholder="Type your sentence here..."></textarea>
+        <div class="word-count">0 words</div>
+      </div>
+      
+      <div class="question-item">
+        <div class="question-number">2. Do you know / if she / will be moving / to a different department?</div>
+        <textarea placeholder="Type your sentence here..."></textarea>
+        <div class="word-count">0 words</div>
+      </div>
+      
+      <div class="question-item">
+        <div class="question-number">3. Can you tell me / whether the cabins / will be available?</div>
+        <textarea placeholder="Type your sentence here..."></textarea>
+        <div class="word-count">0 words</div>
+      </div>
+      
+      <div class="question-item">
+        <div class="question-number">4. What time / does it start?</div>
+        <textarea placeholder="Type your sentence here..."></textarea>
+        <div class="word-count">0 words</div>
+      </div>
+      
+      <div class="question-item">
+        <div class="question-number">5. Do you know / how much / the tickets will cost?</div>
+        <textarea placeholder="Type your sentence here..."></textarea>
+        <div class="word-count">0 words</div>
+      </div>
+      
+      <div class="question-item">
+        <div class="question-number">6. I'm planning to go to the beach tomorrow. is / time of year / what / the water / this / like / temperature</div>
+        <textarea placeholder="Type your sentence here..."></textarea>
+        <div class="word-count">0 words</div>
+      </div>
+      
+      <div class="question-item">
+        <div class="question-number">7. I need to buy groceries today. list / do / a / have / shopping / you</div>
+        <textarea placeholder="Type your sentence here..."></textarea>
+        <div class="word-count">0 words</div>
+      </div>
+      
+      <div class="question-item">
+        <div class="question-number">8. I'll be taking a cooking class this weekend. learn / what / will / you / recipes</div>
+        <textarea placeholder="Type your sentence here..."></textarea>
+        <div class="word-count">0 words</div>
+      </div>
+      
+      <div class="question-item">
+        <div class="question-number">9. What did Maria ask you about the book you're reading? She she / wanted / a copy / buy / to know / could / where</div>
+        <textarea placeholder="Type your sentence here..."></textarea>
+        <div class="word-count">0 words</div>
+      </div>
+      
+      <div class="question-item">
+        <div class="question-number">10. How did you prepare for the exam? I used by / the professor / that / the study guide / was provided / it</div>
+        <textarea placeholder="Type your sentence here..."></textarea>
+        <div class="word-count">0 words</div>
+      </div>
+    </div>
+
+    <!-- Write an Email -->
+    <div class="section">
+      <h2>Write an Email (11)</h2>
+      <p class="task-description">You will have 7 minutes to write the email.</p>
+      
+      <div class="question-item">
+        <div class="question-number">11. Poetry Magazine Submission</div>
+        <div class="passage">
+          <p>A new poetry magazine has asked its readers for submissions, and you decided to submit two of your poems. However, you had a problem using the online submission form, and you are not certain that your submissions were received.</p>
+          <p>Write an email to the editor of the magazine. In your email, do the following:</p>
+          <ul>
+            <li>Tell the editor what you like about the new magazine.</li>
+            <li>Describe the problem you experienced.</li>
+            <li>Ask about the status of your submissions.</li>
+          </ul>
+        </div>
+        <p><strong>To:</strong> editor@sunshinepoetrymagazine.com</p>
+        <p><strong>Subject:</strong> Problem using submission form</p>
+        <textarea placeholder="Write your email here..." style="min-height: 200px;"></textarea>
+        <div class="word-count">0 words</div>
+      </div>
+    </div>
+
+    <!-- Write for an Academic Discussion -->
+    <div class="section">
+      <h2>Write for an Academic Discussion (12)</h2>
+      <p class="task-description">You will have 10 minutes to write. An effective response will contain at least 100 words.</p>
+      
+      <div class="question-item">
+        <div class="question-number">12. Volunteerism Discussion</div>
+        <div class="passage">
+          <p><strong>Professor:</strong> Volunteerism refers to the act of offering your time and service without financial compensation to benefit a community, organization, or cause. While many people volunteer mainly to help others, some institutions have mandatory volunteer programs. High schools are one example, where students may be required to complete a certain number of volunteer hours to graduate. What do you think? Should high school students be required to do volunteer work? Why or why not?</p>
+          
+          <p><strong>Student 1 (Paul):</strong> Yes, I think high schools should require volunteer hours because it helps students build a sense of civic responsibility. Many teenagers don't naturally think about helping others, and this requirement can introduce them to the idea that their time and effort can make a real difference in the lives of others.</p>
+          
+          <p><strong>Student 2 (Anna):</strong> I don't think volunteer hours should be required because many students already have limited free time. Some have part-time jobs or take care of younger siblings after school. Adding a mandatory volunteer requirement could create extra stress and make it harder for those students to balance their existing responsibilities.</p>
+        </div>
+        <textarea placeholder="Write your response here..." style="min-height: 200px;"></textarea>
+        <div class="word-count">0 words</div>
+      </div>
+    </div>
+
+    <div class="nav-buttons">
+      <div></div>
+      <button class="nav-btn" onclick="finishExam()">完成考试，提交答案</button>
+    </div>
+  </div>
+
   <div class="footer">
     <p>
       <a href="#" onclick="toggleRules(); return false;">📖 查看完整的考试规则和说明</a>
       <span style="margin: 0 10px; color: #ccc;">|</span>
       <a href="#" onclick="window.scrollTo({top: 0, behavior: 'smooth'}); return false;">⬆ 返回顶部</a>
     </p>
-    <p style="font-size: 12px; margin-top: 10px; color: #999;">
-      © TOEFL Speaking Mock Test System | 考试时间: 8-10分钟 | 请勿切换屏幕
-    </p>
   </div>
 
   <script>
-    // 全局变量
+    // ========== 考试状态管理 ==========
+    let examState = {
+      status: 'waiting',
+      switchCount: 0,
+      totalSeconds: 7200, // 2小时
+      timerInterval: null
+    };
+
+    // ========== 页面导航 ==========
+    function startExam() {
+      hideAllPages();
+      document.getElementById('readingIntroPage').style.display = 'block';
+      examState.status = 'active';
+      updateStatusBadge('reading', '📖 阅读部分');
+      startTotalTimer();
+    }
+
+    function showModule1Intro() {
+      hideAllPages();
+      document.getElementById('module1Intro').style.display = 'block';
+    }
+
+    function showModule1() {
+      hideAllPages();
+      document.getElementById('module1Page').style.display = 'block';
+    }
+
+    function showModule2Intro() {
+      hideAllPages();
+      document.getElementById('module2Intro').style.display = 'block';
+    }
+
+    function showModule2() {
+      hideAllPages();
+      document.getElementById('module2Page').style.display = 'block';
+    }
+
+    function showSpeaking() {
+      hideAllPages();
+      document.getElementById('speakingPage').style.display = 'block';
+      updateStatusBadge('speaking', '🎤 口语部分');
+    }
+
+    function showWritingIntro() {
+      hideAllPages();
+      document.getElementById('writingIntroPage').style.display = 'block';
+      updateStatusBadge('writing', '✍️ 写作部分');
+    }
+
+    function showWriting() {
+      hideAllPages();
+      document.getElementById('writingPage').style.display = 'block';
+    }
+
+    function finishExam() {
+      alert('考试完成！感谢您的参与。');
+      // 这里可以添加提交答案的逻辑
+    }
+
+    function hideAllPages() {
+      const pages = [
+        'rulesPage', 'readingIntroPage', 'module1Intro', 'module1Page',
+        'module2Intro', 'module2Page', 'speakingPage', 'writingIntroPage',
+        'writingPage'
+      ];
+      pages.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.style.display = 'none';
+      });
+    }
+
+    // ========== 状态更新 ==========
+    function updateStatusBadge(type, text) {
+      const badge = document.getElementById('statusBadge');
+      badge.textContent = text;
+      badge.className = `status-badge ${type}`;
+    }
+
+    // ========== 防切屏检测 ==========
+    document.addEventListener('visibilitychange', function() {
+      if (document.hidden && examState.status === 'active') {
+        handleScreenSwitch();
+      }
+    });
+
+    window.addEventListener('blur', function() {
+      if (examState.status === 'active') {
+        handleScreenSwitch();
+      }
+    });
+
+    function handleScreenSwitch() {
+      if (examState.status !== 'active') return;
+      
+      examState.switchCount++;
+      
+      if (examState.switchCount === 1) {
+        examState.status = 'warning';
+        updateStatusBadge('warning', '⚠️ 警告状态');
+        showWarningModal('first');
+      } else if (examState.switchCount >= 2) {
+        terminateExam('屏幕切换超过限制，考试已自动结束');
+      }
+    }
+
+    // ========== 计时器 ==========
+    function startTotalTimer() {
+      updateTotalTimerDisplay();
+      
+      examState.timerInterval = setInterval(() => {
+        if (examState.status === 'terminated') {
+          clearInterval(examState.timerInterval);
+          return;
+        }
+        
+        examState.totalSeconds--;
+        updateTotalTimerDisplay();
+        
+        if (examState.totalSeconds <= 600) {
+          document.getElementById('timer').classList.add('warning');
+        }
+        
+        if (examState.totalSeconds <= 0) {
+          clearInterval(examState.timerInterval);
+          terminateExam('考试时间到，自动交卷');
+        }
+      }, 1000);
+    }
+
+    function updateTotalTimerDisplay() {
+      const hours = Math.floor(examState.totalSeconds / 3600);
+      const minutes = Math.floor((examState.totalSeconds % 3600) / 60);
+      const seconds = examState.totalSeconds % 60;
+      document.getElementById('timer').textContent = 
+        `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+    }
+
+    // ========== 警告弹窗 ==========
+    function showWarningModal(type) {
+      const modal = document.getElementById('warningModal');
+      const content = document.getElementById('warningContent');
+      const title = document.getElementById('warningTitle');
+      const message = document.getElementById('warningMessage');
+      
+      if (type === 'first') {
+        title.textContent = '⚠️ 第一次警告';
+        message.textContent = '您已切换屏幕。这是第一次警告，再次切换将自动交卷。';
+        content.className = 'warning-content warning';
+      }
+      
+      modal.classList.remove('hidden');
+    }
+
+    function closeWarningModal() {
+      document.getElementById('warningModal').classList.add('hidden');
+    }
+
+    // ========== 终止考试 ==========
+    function terminateExam(reason) {
+      if (examState.status === 'terminated') return;
+      
+      examState.status = 'terminated';
+      
+      if (examState.timerInterval) {
+        clearInterval(examState.timerInterval);
+        examState.timerInterval = null;
+      }
+      
+      updateStatusBadge('terminated', '🔴 考试已终止');
+      
+      const modal = document.getElementById('warningModal');
+      const content = document.getElementById('warningContent');
+      const title = document.getElementById('warningTitle');
+      const message = document.getElementById('warningMessage');
+      
+      title.textContent = '🔴 考试已终止';
+      message.textContent = reason || '考试已自动结束';
+      content.className = 'warning-content terminated';
+      modal.classList.remove('hidden');
+      
+      // 禁用所有按钮
+      document.querySelectorAll('button').forEach(btn => {
+        if (!btn.classList.contains('start-exam-btn')) {
+          btn.disabled = true;
+        }
+      });
+    }
+
+    // ========== 口语部分的录音函数 ==========
     let mediaRecorder;
     let audioChunks = [];
     let recordingStream = null;
 
-    // 新增：折叠面板切换函数
-    function toggleRules() {
-      const content = document.getElementById('rulesContent');
-      const icon = document.getElementById('toggleIcon');
-      
-      if (content.classList.contains('show')) {
-        content.classList.remove('show');
-        icon.innerHTML = '▼';
-        // 平滑滚动到顶部
-        window.scrollTo({top: 0, behavior: 'smooth'});
-      } else {
-        content.classList.add('show');
-        icon.innerHTML = '▲';
-        // 平滑滚动到面板位置
-        setTimeout(() => {
-          document.querySelector('.rules-container').scrollIntoView({behavior: 'smooth'});
-        }, 100);
-      }
-    }
-
-    // Part 1 & Part 2 共用的录音函数
     async function startRecording(event) {
-      // ✅ 修复：确保 event 存在
       if (!event) event = window.event;
+      if (examState.status !== 'active' && examState.status !== 'warning') {
+        alert('考试未开始或已结束');
+        return;
+      }
       
       try {
-        // 1. 检查浏览器兼容性
         if (!navigator.mediaDevices || !window.MediaRecorder) {
           alert('❌ 您的浏览器不支持录音功能。请使用 Chrome、Firefox 或 Edge 最新版本。');
           return;
         }
 
-        // 2. 请求麦克风权限
         const stream = await navigator.mediaDevices.getUserMedia({ 
           audio: {
             echoCancellation: true,
@@ -386,70 +1438,52 @@
         });
         
         recordingStream = stream;
-        
-        // 3. 初始化 MediaRecorder
         mediaRecorder = new MediaRecorder(stream);
         audioChunks = [];
 
-        // 4. 收集音频数据块
         mediaRecorder.ondataavailable = (event) => {
           if (event.data.size > 0) {
             audioChunks.push(event.data);
           }
         };
 
-        // 5. 录音停止时的处理
         mediaRecorder.onstop = () => {
-          // 生成音频文件
           const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
           const audioUrl = URL.createObjectURL(audioBlob);
           
-          // 创建临时音频播放器用于回放
           const audioPlayer = document.createElement('audio');
           audioPlayer.controls = true;
           audioPlayer.src = audioUrl;
           audioPlayer.style.width = '100%';
           audioPlayer.style.marginTop = '10px';
           
-          // 将播放器插入到当前点击的按钮后面
           const activeButton = document.activeElement;
           if (activeButton && activeButton.tagName === 'BUTTON') {
             activeButton.parentNode.insertBefore(audioPlayer, activeButton.nextSibling);
           }
           
-          console.log('✅ 录音完成');
-          
-          // 释放麦克风资源
           if (recordingStream) {
             recordingStream.getTracks().forEach(track => track.stop());
             recordingStream = null;
           }
-          
-          // 清空数据块
           audioChunks = [];
         };
 
-        // 6. 开始录音
         mediaRecorder.start();
-        console.log('🎤 录音已开始');
         
-        // 7. 改变按钮状态
         const currentBtn = event.target;
-        if (currentBtn) {
-          currentBtn.textContent = '🔴 录音中...';
-          currentBtn.style.background = '#ff4444';
-          currentBtn.style.color = 'white';
-          currentBtn.disabled = true;
-          
-          // 添加停止按钮
-          const stopBtn = document.createElement('button');
-          stopBtn.textContent = '⏹️ 停止录音';
-          stopBtn.style.marginLeft = '10px';
-          stopBtn.style.background = '#666';
-          stopBtn.style.color = 'white';
-          stopBtn.onclick = stopRecording;
-          currentBtn.parentNode.insertBefore(stopBtn, currentBtn.nextSibling);
-        }
+        currentBtn.textContent = '🔴 录音中...';
+        currentBtn.style.background = '#ff4444';
+        currentBtn.style.color = 'white';
+        currentBtn.disabled = true;
+        
+        const stopBtn = document.createElement('button');
+        stopBtn.textContent = '⏹️ 停止录音';
+        stopBtn.style.marginLeft = '10px';
+        stopBtn.style.background = '#666';
+        stopBtn.style.color = 'white';
+        stopBtn.onclick = stopRecording;
+        currentBtn.parentNode.insertBefore(stopBtn, currentBtn.nextSibling);
         
       } catch (err) {
         console.error('录音启动失败:', err);
@@ -463,13 +1497,10 @@
       }
     }
 
-    // 停止录音函数
     function stopRecording() {
       if (mediaRecorder && mediaRecorder.state !== 'inactive') {
         mediaRecorder.stop();
-        console.log('⏹️ 录音已停止');
         
-        // 恢复按钮状态
         const recordBtns = document.querySelectorAll('button[onclick="startRecording(event)"]');
         recordBtns.forEach(btn => {
           btn.textContent = 'Start Recording';
@@ -478,20 +1509,43 @@
           btn.disabled = false;
         });
         
-        // 移除停止按钮
         const stopBtns = document.querySelectorAll('button[onclick="stopRecording()"]');
         stopBtns.forEach(btn => btn.remove());
       }
     }
 
-    // 页面卸载时释放资源
-    window.addEventListener('beforeunload', () => {
-      if (recordingStream) {
-        recordingStream.getTracks().forEach(track => track.stop());
+    // ========== 折叠面板切换函数 ==========
+    function toggleRules() {
+      const content = document.getElementById('rulesContent');
+      const icon = document.getElementById('toggleIcon');
+      
+      if (content.classList.contains('show')) {
+        content.classList.remove('show');
+        icon.innerHTML = '▼';
+        window.scrollTo({top: 0, behavior: 'smooth'});
+      } else {
+        content.classList.add('show');
+        icon.innerHTML = '▲';
+        setTimeout(() => {
+          document.querySelector('.rules-container').scrollIntoView({behavior: 'smooth'});
+        }, 100);
+      }
+    }
+
+    // 初始化
+    window.onload = function() {
+      updateStatusBadge('waiting', '📋 阅读规则');
+      updateTotalTimerDisplay();
+    };
+
+    // 页面卸载前提示
+    window.addEventListener('beforeunload', function(e) {
+      if (examState.status === 'active' || examState.status === 'warning') {
+        e.preventDefault();
+        e.returnValue = '考试正在进行中，确定要离开吗？';
       }
     });
   </script>
-  
 </body>
 </html>
-<!-- force rebuild: embedded README as collapsible panel -->
+<!-- force rebuild: added writing section from PDF -->
