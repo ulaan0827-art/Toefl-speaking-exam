@@ -26,45 +26,91 @@
       width: 100%;
     }
     
-    /* 新增样式：考试信息提示框 */
-    .exam-info {
-      background-color: #e8f4fd;
-      border-left: 4px solid #2196F3;
-      padding: 15px 20px;
+    /* 考试规则折叠面板样式 */
+    .rules-container {
       margin-bottom: 30px;
-      border-radius: 0 8px 8px 0;
+      border: 1px solid #e0e0e0;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+    
+    .rules-header {
+      background-color: #e8f4fd;
+      padding: 15px 20px;
+      cursor: pointer;
       display: flex;
-      align-items: center;
       justify-content: space-between;
-      flex-wrap: wrap;
-      gap: 10px;
-    }
-    
-    .exam-info p {
-      margin: 0;
-      color: #1976D2;
-      font-weight: 500;
-    }
-    
-    .exam-info a {
-      background-color: #2196F3;
-      color: white;
-      text-decoration: none;
-      padding: 8px 16px;
-      border-radius: 20px;
-      font-size: 14px;
+      align-items: center;
       transition: background-color 0.3s;
     }
     
-    .exam-info a:hover {
-      background-color: #1976D2;
+    .rules-header:hover {
+      background-color: #d1e9ff;
     }
     
-    .exam-info a:visited {
-      color: white;
+    .rules-header span {
+      font-weight: 600;
+      color: #1976D2;
+      font-size: 16px;
     }
     
-    /* 新增样式：页脚 */
+    .toggle-icon {
+      font-size: 20px;
+      color: #1976D2;
+      transition: transform 0.3s;
+    }
+    
+    .rules-content {
+      padding: 25px;
+      background-color: white;
+      display: none;
+      border-top: 1px solid #e0e0e0;
+      max-height: 400px;
+      overflow-y: auto;
+    }
+    
+    .rules-content.show {
+      display: block;
+    }
+    
+    /* 规则内容样式 */
+    .rules-content h3 {
+      margin-top: 0;
+      color: #333;
+      font-size: 20px;
+    }
+    
+    .rules-content h4 {
+      margin: 20px 0 10px;
+      color: #1976D2;
+      font-size: 18px;
+    }
+    
+    .rules-content h4:first-of-type {
+      margin-top: 0;
+    }
+    
+    .rules-content ul {
+      margin: 10px 0;
+      padding-left: 20px;
+    }
+    
+    .rules-content li {
+      margin: 5px 0;
+    }
+    
+    .rules-content p {
+      margin: 10px 0;
+    }
+    
+    .rules-content hr {
+      border: none;
+      border-top: 1px solid #eee;
+      margin: 20px 0;
+    }
+    
+    /* 页脚样式 */
     .footer {
       margin-top: 40px;
       padding-top: 20px;
@@ -81,15 +127,144 @@
     .footer a:hover {
       text-decoration: underline;
     }
+    
+    /* 新增：关闭按钮样式 */
+    .close-rules {
+      text-align: right;
+      margin-bottom: 15px;
+    }
+    
+    .close-rules button {
+      background: none;
+      border: none;
+      color: #666;
+      cursor: pointer;
+      font-size: 14px;
+      padding: 5px 10px;
+    }
+    
+    .close-rules button:hover {
+      color: #1976D2;
+    }
   </style>
 </head>
 
 <body>
 
-  <!-- 修改点1：顶部链接指向仓库主页 -->
-  <div class="exam-info">
-    <p>📋 请仔细阅读考试规则和说明</p>
-    <a href="https://github.com/ulaan0827-art/Toefl-speaking-exam" target="_blank">查看考试说明 →</a>
+  <!-- 删除原来的 exam-info，替换为折叠面板 -->
+  <div class="rules-container">
+    <div class="rules-header" onclick="toggleRules()">
+      <span>📋 点击查看考试规则和说明</span>
+      <span class="toggle-icon" id="toggleIcon">▼</span>
+    </div>
+    <div class="rules-content" id="rulesContent">
+      <div class="close-rules">
+        <button onclick="toggleRules()">✕ 关闭</button>
+      </div>
+      
+      <h3>TOEFL Speaking Online Exam System</h3>
+      <p>在线托福口语模考系统，用于教师组织限时口语考试并自动收集学生录音。</p>
+      
+      <hr>
+      
+      <h4>👩‍🏫 教师信息</h4>
+      <ul>
+        <li><strong>教师邮箱：</strong>ulaan0827@gmail.com</li>
+        <li><strong>接收邮箱：</strong>ulaan0827@gmail.com</li>
+      </ul>
+      <p>学生提交的录音将自动发送至上述邮箱。</p>
+      
+      <h4>⏰ 考试规则</h4>
+      <ul>
+        <li><strong>考试时长：</strong>8–10 分钟（可调整）</li>
+        <li><strong>屏幕切换规则：</strong>
+          <ul>
+            <li>第 1 次：警告</li>
+            <li>第 2 次：自动交卷</li>
+          </ul>
+        </li>
+      </ul>
+      <p>请确保学生在考试开始前了解以上规则。</p>
+      
+      <h4>🎧 考试结构（新托福口语题型）</h4>
+      <p>本考试采用新托福口语题型，共包含两个部分：</p>
+      
+      <h5>1. 听读模仿</h5>
+      <ul>
+        <li>学生听一段短句或短文</li>
+        <li>音频自动播放</li>
+        <li>学生重复所听到的内容</li>
+        <li>回答将被即时录音</li>
+      </ul>
+      
+      <h5>2. 面试问答</h5>
+      <ul>
+        <li>学生回答开放式面试问题</li>
+        <li>问题涉及：
+          <ul>
+            <li>个人经历</li>
+            <li>观点表达</li>
+            <li>简单论述</li>
+          </ul>
+        </li>
+        <li>限时作答</li>
+        <li>所有回答自动录音</li>
+      </ul>
+      <p>⏱️ 两部分均在总考试时间内完成。</p>
+      
+      <h4>👨‍🎓 学生须知</h4>
+      <ol>
+        <li>使用 <strong>Google Chrome 浏览器</strong></li>
+        <li>考前检查：
+          <ul>
+            <li>麦克风权限已开启</li>
+            <li>网络连接稳定</li>
+          </ul>
+        </li>
+        <li>点击教师提供的考试链接</li>
+        <li>仔细阅读屏幕提示</li>
+        <li>请<strong>勿</strong>：
+          <ul>
+            <li>刷新页面</li>
+            <li>切换浏览器标签</li>
+            <li>打开其他应用</li>
+          </ul>
+        </li>
+      </ol>
+      <p>⚠️ 屏幕切换将触发警告或自动交卷。</p>
+      
+      <h4>📤 考试结束后</h4>
+      <ul>
+        <li>所有录音自动上传</li>
+        <li>教师将通过邮件收到音频文件</li>
+        <li>学生无需手动提交任何内容</li>
+      </ul>
+      
+      <h4>🛠️ 技术说明（供教师参考）</h4>
+      <ul>
+        <li>前端：网页版考试界面</li>
+        <li>后端：处理录音上传及邮件发送</li>
+        <li>仓库结构：
+          <ul>
+            <li><code>/frontend</code> – 学生考试界面</li>
+            <li><code>/backend</code> – 服务端及邮件逻辑</li>
+          </ul>
+        </li>
+      </ul>
+      <p>考试当天无需操作命令行。</p>
+      
+      <h4>✅ 考前检查清单</h4>
+      <ul style="list-style-type: none; padding-left: 0;">
+        <li>☐ 测试考试链接</li>
+        <li>☐ 测试麦克风</li>
+        <li>☐ 确认考试时长</li>
+        <li>☐ 向学生说明考试规则</li>
+      </ul>
+      
+      <h4>📌 联系方式</h4>
+      <p>考试中如遇技术问题，请联系教师。</p>
+      <p>祝考试顺利！</p>
+    </div>
   </div>
 
   <h1>TOEFL Speaking Test</h1>
@@ -151,10 +326,10 @@
     <button onclick="startRecording(event)" style="margin-top: 20px;">Start Recording</button>
   </div>
   
-  <!-- 修改点2：底部链接同样指向仓库主页 -->
+  <!-- 修改底部链接，改为展开规则面板 -->
   <div class="footer">
     <p>
-      <a href="https://github.com/ulaan0827-art/Toefl-speaking-exam" target="_blank">📖 查看完整的考试规则和说明</a>
+      <a href="#" onclick="toggleRules(); return false;">📖 查看完整的考试规则和说明</a>
       <span style="margin: 0 10px; color: #ccc;">|</span>
       <a href="#" onclick="window.scrollTo({top: 0, behavior: 'smooth'}); return false;">⬆ 返回顶部</a>
     </p>
@@ -168,6 +343,26 @@
     let mediaRecorder;
     let audioChunks = [];
     let recordingStream = null;
+
+    // 新增：折叠面板切换函数
+    function toggleRules() {
+      const content = document.getElementById('rulesContent');
+      const icon = document.getElementById('toggleIcon');
+      
+      if (content.classList.contains('show')) {
+        content.classList.remove('show');
+        icon.innerHTML = '▼';
+        // 平滑滚动到顶部
+        window.scrollTo({top: 0, behavior: 'smooth'});
+      } else {
+        content.classList.add('show');
+        icon.innerHTML = '▲';
+        // 平滑滚动到面板位置
+        setTimeout(() => {
+          document.querySelector('.rules-container').scrollIntoView({behavior: 'smooth'});
+        }, 100);
+      }
+    }
 
     // Part 1 & Part 2 共用的录音函数
     async function startRecording(event) {
@@ -299,4 +494,4 @@
   
 </body>
 </html>
-<!-- force rebuild: fixed README links -->
+<!-- force rebuild: embedded README as collapsible panel -->
