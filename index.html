@@ -6,10 +6,10 @@
   <style>
     body {
       font-family: Arial, sans-serif;
-      max-width: 900px;
+      max-width: 1000px;
       margin: 40px auto;
       line-height: 1.6;
-      padding: 0 20px;
+      padding: 0 30px;
       background: #fafafa;
     }
     
@@ -93,7 +93,7 @@
     /* 页面显示控制 */
     #rulesPage, #readingIntroPage, #module1Intro, #module1Page, 
     #module2Intro, #module2Page, #speakingPage, #writingIntroPage, 
-    #writingPage, #writingEmailPage, #writingDiscussionPage {
+    #writingPage {
       display: none;
     }
     
@@ -325,30 +325,57 @@
       margin: 15px 0;
     }
     
+    /* 选择题样式 - 修复 */
     .options {
       margin: 15px 0;
     }
     
     .option {
-      margin: 8px 0;
+      margin: 10px 0;
+      display: flex;
+      align-items: center;
     }
     
-    input[type="text"], input[type="radio"] {
-      margin-right: 8px;
+    .option input[type="radio"] {
+      width: 18px;
+      height: 18px;
+      margin-right: 10px;
+      cursor: pointer;
     }
     
-    .fill-blank {
+    .option label {
+      cursor: pointer;
+      font-size: 16px;
+      color: #333;
+    }
+    
+    /* 填空输入框样式 - 新增 */
+    .fill-blank-input {
+      width: 40px;
+      height: 35px;
+      text-align: center;
       font-size: 18px;
-      line-height: 2;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      margin: 0 2px;
+      padding: 0;
     }
     
-    .fill-blank input {
-      width: 60px;
-      padding: 4px;
+    .fill-blank-container {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 2px;
+      margin: 15px 0;
+      font-size: 18px;
+      line-height: 2.5;
+    }
+    
+    .fill-blank-text {
       margin: 0 2px;
     }
     
-    /* 口语部分样式 - 从你的代码继承 */
+    /* 口语部分样式 */
     .question {
       margin-top: 30px;
     }
@@ -357,6 +384,15 @@
       padding: 10px 20px;
       font-size: 16px;
       margin-top: 10px;
+      background: #2196F3;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    
+    button:hover {
+      background: #1976D2;
     }
     
     audio {
@@ -592,11 +628,11 @@
     </div>
   </div>
 
-  <!-- Module 1 题目 -->
+  <!-- Module 1 题目 - 修复版 -->
   <div id="module1Page">
     <h1>📖 阅读 Module 1</h1>
     
-    <!-- 第1-10题：Complete the Words -->
+    <!-- 第1-10题：Complete the Words - 修复为每个字母一个输入框 -->
     <div class="section">
       <h2>Complete the Words (1-10)</h2>
       <p class="task-description">Fill in the missing letters in the paragraph.</p>
@@ -604,12 +640,53 @@
       <div class="question-item">
         <div class="question-number">Questions 1-10</div>
         <div class="passage">
-          <p>We know from drawings that have been preserved in caves for over 10,000 years that early humans performed dances as a group activity. We mi<u>__</u><u>_</u> think th<u>_</u> prehistoric peo<u>_</u><u>_</u> concentrated on<u>_</u> on ba<u>_</u><u>_</u> survival. How<u>_</u><u>_</u> it i<u>_</u> clear fr<u>_</u><u>_</u> the rec<u>_</u><u>_</u> that dan<u>_</u><u>_</u><u>_</u> was important to them. They recorded more drawings of dances than of any other group activity. Dances served various purposes, including ritualistic communication with the divine, storytelling, and social cohesion.</p>
+          <p>We know from drawings that have been preserved in caves for over 10,000 years that early humans performed dances as a group activity.</p>
+          <div class="fill-blank-container">
+            <span class="fill-blank-text">We</span>
+            <input type="text" class="fill-blank-input" maxlength="1" placeholder="_">
+            <input type="text" class="fill-blank-input" maxlength="1" placeholder="_">
+            <input type="text" class="fill-blank-input" maxlength="1" placeholder="_">
+            <span class="fill-blank-text">think</span>
+            <input type="text" class="fill-blank-input" maxlength="1" placeholder="_">
+            <input type="text" class="fill-blank-input" maxlength="1" placeholder="_">
+            <span class="fill-blank-text">prehistoric</span>
+            <input type="text" class="fill-blank-input" maxlength="1" placeholder="_">
+            <input type="text" class="fill-blank-input" maxlength="1" placeholder="_">
+            <input type="text" class="fill-blank-input" maxlength="1" placeholder="_">
+            <span class="fill-blank-text">concentrated on</span>
+            <input type="text" class="fill-blank-input" maxlength="1" placeholder="_">
+            <input type="text" class="fill-blank-input" maxlength="1" placeholder="_">
+            <span class="fill-blank-text">on ba</span>
+            <input type="text" class="fill-blank-input" maxlength="1" placeholder="_">
+            <input type="text" class="fill-blank-input" maxlength="1" placeholder="_">
+            <input type="text" class="fill-blank-input" maxlength="1" placeholder="_">
+            <span class="fill-blank-text">survival.</span>
+          </div>
+          <div class="fill-blank-container">
+            <span class="fill-blank-text">How</span>
+            <input type="text" class="fill-blank-input" maxlength="1" placeholder="_">
+            <input type="text" class="fill-blank-input" maxlength="1" placeholder="_">
+            <input type="text" class="fill-blank-input" maxlength="1" placeholder="_">
+            <span class="fill-blank-text">it i</span>
+            <input type="text" class="fill-blank-input" maxlength="1" placeholder="_">
+            <span class="fill-blank-text">clear fr</span>
+            <input type="text" class="fill-blank-input" maxlength="1" placeholder="_">
+            <input type="text" class="fill-blank-input" maxlength="1" placeholder="_">
+            <span class="fill-blank-text">the rec</span>
+            <input type="text" class="fill-blank-input" maxlength="1" placeholder="_">
+            <input type="text" class="fill-blank-input" maxlength="1" placeholder="_">
+            <span class="fill-blank-text">that dan</span>
+            <input type="text" class="fill-blank-input" maxlength="1" placeholder="_">
+            <input type="text" class="fill-blank-input" maxlength="1" placeholder="_">
+            <input type="text" class="fill-blank-input" maxlength="1" placeholder="_">
+            <span class="fill-blank-text">was important to them.</span>
+          </div>
+          <p>They recorded more drawings of dances than of any other group activity. Dances served various purposes, including ritualistic communication with the divine, storytelling, and social cohesion.</p>
         </div>
       </div>
     </div>
 
-    <!-- 第11-12题：Read a notice -->
+    <!-- 第11-12题：Read a notice - 修复选择题 -->
     <div class="section">
       <h2>Read a notice (11-12)</h2>
       
@@ -623,18 +700,18 @@
         
         <div class="question-number">11. What type of business issued the notice?</div>
         <div class="options">
-          <div class="option"><input type="radio" name="q11"> A. An Internet provider</div>
-          <div class="option"><input type="radio" name="q11"> B. A computer company</div>
-          <div class="option"><input type="radio" name="q11"> C. A paper company</div>
-          <div class="option"><input type="radio" name="q11"> D. A bank</div>
+          <div class="option"><input type="radio" name="q11" id="q11a"><label for="q11a"> A. An Internet provider</label></div>
+          <div class="option"><input type="radio" name="q11" id="q11b"><label for="q11b"> B. A computer company</label></div>
+          <div class="option"><input type="radio" name="q11" id="q11c"><label for="q11c"> C. A paper company</label></div>
+          <div class="option"><input type="radio" name="q11" id="q11d"><label for="q11d"> D. A bank</label></div>
         </div>
         
         <div class="question-number">12. How can customers enroll in paperless billing?</div>
         <div class="options">
-          <div class="option"><input type="radio" name="q12"> A. By visiting a Municipal Charter office</div>
-          <div class="option"><input type="radio" name="q12"> B. By accessing the Municipal Charter website</div>
-          <div class="option"><input type="radio" name="q12"> C. By using the Municipal Charter app</div>
-          <div class="option"><input type="radio" name="q12"> D. By calling a Municipal Charter customer service representative</div>
+          <div class="option"><input type="radio" name="q12" id="q12a"><label for="q12a"> A. By visiting a Municipal Charter office</label></div>
+          <div class="option"><input type="radio" name="q12" id="q12b"><label for="q12b"> B. By accessing the Municipal Charter website</label></div>
+          <div class="option"><input type="radio" name="q12" id="q12c"><label for="q12c"> C. By using the Municipal Charter app</label></div>
+          <div class="option"><input type="radio" name="q12" id="q12d"><label for="q12d"> D. By calling a Municipal Charter customer service representative</label></div>
         </div>
       </div>
     </div>
@@ -654,26 +731,26 @@
         
         <div class="question-number">13. What is the main purpose of the post?</div>
         <div class="options">
-          <div class="option"><input type="radio" name="q13"> A. To explain the benefits of organic farming</div>
-          <div class="option"><input type="radio" name="q13"> B. To describe the variety of products available at the farmer's market</div>
-          <div class="option"><input type="radio" name="q13"> C. To compare different farmer's markets in the area</div>
-          <div class="option"><input type="radio" name="q13"> D. To offer advice on starting a stall at the farmer's market</div>
+          <div class="option"><input type="radio" name="q13" id="q13a"><label for="q13a"> A. To explain the benefits of organic farming</label></div>
+          <div class="option"><input type="radio" name="q13" id="q13b"><label for="q13b"> B. To describe the variety of products available at the farmer's market</label></div>
+          <div class="option"><input type="radio" name="q13" id="q13c"><label for="q13c"> C. To compare different farmer's markets in the area</label></div>
+          <div class="option"><input type="radio" name="q13" id="q13d"><label for="q13d"> D. To offer advice on starting a stall at the farmer's market</label></div>
         </div>
         
         <div class="question-number">14. What reason is given for the popularity of the Thompson family's stall?</div>
         <div class="options">
-          <div class="option"><input type="radio" name="q14"> A. They offer cooking tips and recipes.</div>
-          <div class="option"><input type="radio" name="q14"> B. They offer the lowest prices at the market.</div>
-          <div class="option"><input type="radio" name="q14"> C. They provide friendly service and excellent products.</div>
-          <div class="option"><input type="radio" name="q14"> D. They have a beautiful and well-decorated stall.</div>
+          <div class="option"><input type="radio" name="q14" id="q14a"><label for="q14a"> A. They offer cooking tips and recipes.</label></div>
+          <div class="option"><input type="radio" name="q14" id="q14b"><label for="q14b"> B. They offer the lowest prices at the market.</label></div>
+          <div class="option"><input type="radio" name="q14" id="q14c"><label for="q14c"> C. They provide friendly service and excellent products.</label></div>
+          <div class="option"><input type="radio" name="q14" id="q14d"><label for="q14d"> D. They have a beautiful and well-decorated stall.</label></div>
         </div>
         
         <div class="question-number">15. Why do customers go to the bakery stall early?</div>
         <div class="options">
-          <div class="option"><input type="radio" name="q15"> A. To get the free samples given in mornings</div>
-          <div class="option"><input type="radio" name="q15"> B. To get freshly baked bread and pastries before they are gone</div>
-          <div class="option"><input type="radio" name="q15"> C. To meet the famous baker</div>
-          <div class="option"><input type="radio" name="q15"> D. To take advantage of early morning discounts</div>
+          <div class="option"><input type="radio" name="q15" id="q15a"><label for="q15a"> A. To get the free samples given in mornings</label></div>
+          <div class="option"><input type="radio" name="q15" id="q15b"><label for="q15b"> B. To get freshly baked bread and pastries before they are gone</label></div>
+          <div class="option"><input type="radio" name="q15" id="q15c"><label for="q15c"> C. To meet the famous baker</label></div>
+          <div class="option"><input type="radio" name="q15" id="q15d"><label for="q15d"> D. To take advantage of early morning discounts</label></div>
         </div>
       </div>
     </div>
@@ -693,42 +770,42 @@
         
         <div class="question-number">16. What is the passage mainly about?</div>
         <div class="options">
-          <div class="option"><input type="radio" name="q16"> A. Stages of early childhood development</div>
-          <div class="option"><input type="radio" name="q16"> B. Research on animal cognition</div>
-          <div class="option"><input type="radio" name="q16"> C. Differences between apes, elephants, and dolphins</div>
-          <div class="option"><input type="radio" name="q16"> D. Recent experiments on fish</div>
+          <div class="option"><input type="radio" name="q16" id="q16a"><label for="q16a"> A. Stages of early childhood development</label></div>
+          <div class="option"><input type="radio" name="q16" id="q16b"><label for="q16b"> B. Research on animal cognition</label></div>
+          <div class="option"><input type="radio" name="q16" id="q16c"><label for="q16c"> C. Differences between apes, elephants, and dolphins</label></div>
+          <div class="option"><input type="radio" name="q16" id="q16d"><label for="q16d"> D. Recent experiments on fish</label></div>
         </div>
         
         <div class="question-number">17. The word "milestone" in the first sentence is closest in meaning to</div>
         <div class="options">
-          <div class="option"><input type="radio" name="q17"> A. accomplishment</div>
-          <div class="option"><input type="radio" name="q17"> B. distance</div>
-          <div class="option"><input type="radio" name="q17"> C. weight</div>
-          <div class="option"><input type="radio" name="q17"> D. discovery</div>
+          <div class="option"><input type="radio" name="q17" id="q17a"><label for="q17a"> A. accomplishment</label></div>
+          <div class="option"><input type="radio" name="q17" id="q17b"><label for="q17b"> B. distance</label></div>
+          <div class="option"><input type="radio" name="q17" id="q17c"><label for="q17c"> C. weight</label></div>
+          <div class="option"><input type="radio" name="q17" id="q17d"><label for="q17d"> D. discovery</label></div>
         </div>
         
         <div class="question-number">18. Why did scientists put colored marks on animals' bodies?</div>
         <div class="options">
-          <div class="option"><input type="radio" name="q18"> A. It made it possible to track the animals' movements.</div>
-          <div class="option"><input type="radio" name="q18"> B. It helped them determine whether the animals recognized themselves.</div>
-          <div class="option"><input type="radio" name="q18"> C. It made it easier to tell the animals apart.</div>
-          <div class="option"><input type="radio" name="q18"> D. It showed whether some animals can detect color differences.</div>
+          <div class="option"><input type="radio" name="q18" id="q18a"><label for="q18a"> A. It made it possible to track the animals' movements.</label></div>
+          <div class="option"><input type="radio" name="q18" id="q18b"><label for="q18b"> B. It helped them determine whether the animals recognized themselves.</label></div>
+          <div class="option"><input type="radio" name="q18" id="q18c"><label for="q18c"> C. It made it easier to tell the animals apart.</label></div>
+          <div class="option"><input type="radio" name="q18" id="q18d"><label for="q18d"> D. It showed whether some animals can detect color differences.</label></div>
         </div>
         
         <div class="question-number">19. According to the passage, all of the following are true about elephants EXCEPT:</div>
         <div class="options">
-          <div class="option"><input type="radio" name="q19"> A. They can recognize themselves in mirrors.</div>
-          <div class="option"><input type="radio" name="q19"> B. They are highly intelligent animals.</div>
-          <div class="option"><input type="radio" name="q19"> C. They possess qualities in common with apes.</div>
-          <div class="option"><input type="radio" name="q19"> D. They understand certain signs from other animals.</div>
+          <div class="option"><input type="radio" name="q19" id="q19a"><label for="q19a"> A. They can recognize themselves in mirrors.</label></div>
+          <div class="option"><input type="radio" name="q19" id="q19b"><label for="q19b"> B. They are highly intelligent animals.</label></div>
+          <div class="option"><input type="radio" name="q19" id="q19c"><label for="q19c"> C. They possess qualities in common with apes.</label></div>
+          <div class="option"><input type="radio" name="q19" id="q19d"><label for="q19d"> D. They understand certain signs from other animals.</label></div>
         </div>
         
         <div class="question-number">20. Why does the author mention cleaner fish?</div>
         <div class="options">
-          <div class="option"><input type="radio" name="q20"> A. To suggest that a wide range of animals may possess self-awareness</div>
-          <div class="option"><input type="radio" name="q20"> B. To imply that ocean animals are highly intelligent</div>
-          <div class="option"><input type="radio" name="q20"> C. To demonstrate a flaw in a recent experiment</div>
-          <div class="option"><input type="radio" name="q20"> D. To provide an example of an animal that does not recognize itself</div>
+          <div class="option"><input type="radio" name="q20" id="q20a"><label for="q20a"> A. To suggest that a wide range of animals may possess self-awareness</label></div>
+          <div class="option"><input type="radio" name="q20" id="q20b"><label for="q20b"> B. To imply that ocean animals are highly intelligent</label></div>
+          <div class="option"><input type="radio" name="q20" id="q20c"><label for="q20c"> C. To demonstrate a flaw in a recent experiment</label></div>
+          <div class="option"><input type="radio" name="q20" id="q20d"><label for="q20d"> D. To provide an example of an animal that does not recognize itself</label></div>
         </div>
       </div>
     </div>
@@ -756,11 +833,11 @@
     </div>
   </div>
 
-  <!-- Module 2 题目 -->
+  <!-- Module 2 题目 - 修复版 -->
   <div id="module2Page">
     <h1>📖 阅读 Module 2</h1>
     
-    <!-- 第1-10题：Complete the Words -->
+    <!-- 第1-10题：Complete the Words - 修复为每个字母一个输入框 -->
     <div class="section">
       <h2>Complete the Words (1-10)</h2>
       <p class="task-description">Fill in the missing letters in the paragraph.</p>
@@ -768,12 +845,55 @@
       <div class="question-item">
         <div class="question-number">Questions 1-10</div>
         <div class="passage">
-          <p>The human brain is a complex organ responsible for controlling all bodily functions and enabling thought, emotion, and memory. It i_ divided in_ several reg_ _ _ , each wi_ specific ro_ _ _ . The cerebrum, i_ largest pa_ _ , is invo_ _ _ in cogn_ _ _ _ _ _ _ _ functions su_ _ as reasoning, planning, and language. The cerebellum coordinates movement and balance, while the brainstem controls vital bodily functions like breathing and heart rate. Together, they enable the brain to perform its various tasks.</p>
+          <p>The human brain is a complex organ responsible for controlling all bodily functions and enabling thought, emotion, and memory.</p>
+          <div class="fill-blank-container">
+            <span class="fill-blank-text">It i</span>
+            <input type="text" class="fill-blank-input" maxlength="1" placeholder="_">
+            <span class="fill-blank-text">divided in</span>
+            <input type="text" class="fill-blank-input" maxlength="1" placeholder="_">
+            <span class="fill-blank-text">several reg</span>
+            <input type="text" class="fill-blank-input" maxlength="1" placeholder="_">
+            <input type="text" class="fill-blank-input" maxlength="1" placeholder="_">
+            <input type="text" class="fill-blank-input" maxlength="1" placeholder="_">
+            <span class="fill-blank-text">, each wi</span>
+            <input type="text" class="fill-blank-input" maxlength="1" placeholder="_">
+            <input type="text" class="fill-blank-input" maxlength="1" placeholder="_">
+            <span class="fill-blank-text">specific ro</span>
+            <input type="text" class="fill-blank-input" maxlength="1" placeholder="_">
+            <input type="text" class="fill-blank-input" maxlength="1" placeholder="_">
+            <input type="text" class="fill-blank-input" maxlength="1" placeholder="_">
+            <span class="fill-blank-text">.</span>
+          </div>
+          <div class="fill-blank-container">
+            <span class="fill-blank-text">The cerebrum, i</span>
+            <input type="text" class="fill-blank-input" maxlength="1" placeholder="_">
+            <span class="fill-blank-text">largest pa</span>
+            <input type="text" class="fill-blank-input" maxlength="1" placeholder="_">
+            <input type="text" class="fill-blank-input" maxlength="1" placeholder="_">
+            <span class="fill-blank-text">, is invo</span>
+            <input type="text" class="fill-blank-input" maxlength="1" placeholder="_">
+            <input type="text" class="fill-blank-input" maxlength="1" placeholder="_">
+            <input type="text" class="fill-blank-input" maxlength="1" placeholder="_">
+            <span class="fill-blank-text">in cogn</span>
+            <input type="text" class="fill-blank-input" maxlength="1" placeholder="_">
+            <input type="text" class="fill-blank-input" maxlength="1" placeholder="_">
+            <input type="text" class="fill-blank-input" maxlength="1" placeholder="_">
+            <input type="text" class="fill-blank-input" maxlength="1" placeholder="_">
+            <input type="text" class="fill-blank-input" maxlength="1" placeholder="_">
+            <input type="text" class="fill-blank-input" maxlength="1" placeholder="_">
+            <input type="text" class="fill-blank-input" maxlength="1" placeholder="_">
+            <input type="text" class="fill-blank-input" maxlength="1" placeholder="_">
+            <span class="fill-blank-text">functions su</span>
+            <input type="text" class="fill-blank-input" maxlength="1" placeholder="_">
+            <input type="text" class="fill-blank-input" maxlength="1" placeholder="_">
+            <span class="fill-blank-text">as reasoning, planning, and language.</span>
+          </div>
+          <p>The cerebellum coordinates movement and balance, while the brainstem controls vital bodily functions like breathing and heart rate. Together, they enable the brain to perform its various tasks.</p>
         </div>
       </div>
     </div>
 
-    <!-- 第11-12题：Read an email -->
+    <!-- 第11-12题：Read an email - 修复选择题 -->
     <div class="section">
       <h2>Read an email (11-12)</h2>
       
@@ -791,18 +911,18 @@
         
         <div class="question-number">11. When is the date of the art workshop?</div>
         <div class="options">
-          <div class="option"><input type="radio" name="m2q11"> A. September 10th</div>
-          <div class="option"><input type="radio" name="m2q11"> B. September 12th</div>
-          <div class="option"><input type="radio" name="m2q11"> C. September 20th</div>
-          <div class="option"><input type="radio" name="m2q11"> D. September 30th</div>
+          <div class="option"><input type="radio" name="m2q11" id="m2q11a"><label for="m2q11a"> A. September 10th</label></div>
+          <div class="option"><input type="radio" name="m2q11" id="m2q11b"><label for="m2q11b"> B. September 12th</label></div>
+          <div class="option"><input type="radio" name="m2q11" id="m2q11c"><label for="m2q11c"> C. September 20th</label></div>
+          <div class="option"><input type="radio" name="m2q11" id="m2q11d"><label for="m2q11d"> D. September 30th</label></div>
         </div>
         
         <div class="question-number">12. What should Ms. Edwards bring to the workshop?</div>
         <div class="options">
-          <div class="option"><input type="radio" name="m2q12"> A. A payment method</div>
-          <div class="option"><input type="radio" name="m2q12"> B. Extra paint</div>
-          <div class="option"><input type="radio" name="m2q12"> C. A protective garment</div>
-          <div class="option"><input type="radio" name="m2q12"> D. Proof of reservation</div>
+          <div class="option"><input type="radio" name="m2q12" id="m2q12a"><label for="m2q12a"> A. A payment method</label></div>
+          <div class="option"><input type="radio" name="m2q12" id="m2q12b"><label for="m2q12b"> B. Extra paint</label></div>
+          <div class="option"><input type="radio" name="m2q12" id="m2q12c"><label for="m2q12c"> C. A protective garment</label></div>
+          <div class="option"><input type="radio" name="m2q12" id="m2q12d"><label for="m2q12d"> D. Proof of reservation</label></div>
         </div>
       </div>
     </div>
@@ -827,26 +947,26 @@
         
         <div class="question-number">13. What is the main purpose of the email?</div>
         <div class="options">
-          <div class="option"><input type="radio" name="m2q13"> A. To attract customers to a new fitness center</div>
-          <div class="option"><input type="radio" name="m2q13"> B. To provide Ms. Nguyen with an opportunity to provide expert personal training</div>
-          <div class="option"><input type="radio" name="m2q13"> C. To celebrate Ms. Nguyen's achievements in wellness</div>
-          <div class="option"><input type="radio" name="m2q13"> D. To announce a discount available to fitness-center members</div>
+          <div class="option"><input type="radio" name="m2q13" id="m2q13a"><label for="m2q13a"> A. To attract customers to a new fitness center</label></div>
+          <div class="option"><input type="radio" name="m2q13" id="m2q13b"><label for="m2q13b"> B. To provide Ms. Nguyen with an opportunity to provide expert personal training</label></div>
+          <div class="option"><input type="radio" name="m2q13" id="m2q13c"><label for="m2q13c"> C. To celebrate Ms. Nguyen's achievements in wellness</label></div>
+          <div class="option"><input type="radio" name="m2q13" id="m2q13d"><label for="m2q13d"> D. To announce a discount available to fitness-center members</label></div>
         </div>
         
         <div class="question-number">14. What can be inferred about Ms. Nguyen's relationship with the fitness center?</div>
         <div class="options">
-          <div class="option"><input type="radio" name="m2q14"> A. She helps the fitness center to organize activities.</div>
-          <div class="option"><input type="radio" name="m2q14"> B. She has already explored the new facility.</div>
-          <div class="option"><input type="radio" name="m2q14"> C. She is a member at one of the fitness center's other locations.</div>
-          <div class="option"><input type="radio" name="m2q14"> D. She is new to using fitness centers and exercise equipment.</div>
+          <div class="option"><input type="radio" name="m2q14" id="m2q14a"><label for="m2q14a"> A. She helps the fitness center to organize activities.</label></div>
+          <div class="option"><input type="radio" name="m2q14" id="m2q14b"><label for="m2q14b"> B. She has already explored the new facility.</label></div>
+          <div class="option"><input type="radio" name="m2q14" id="m2q14c"><label for="m2q14c"> C. She is a member at one of the fitness center's other locations.</label></div>
+          <div class="option"><input type="radio" name="m2q14" id="m2q14d"><label for="m2q14d"> D. She is new to using fitness centers and exercise equipment.</label></div>
         </div>
         
         <div class="question-number">15. The new fitness center is intended for use by which of the following groups of people?</div>
         <div class="options">
-          <div class="option"><input type="radio" name="m2q15"> A. Expert personal trainers</div>
-          <div class="option"><input type="radio" name="m2q15"> B. Top-tier athletes</div>
-          <div class="option"><input type="radio" name="m2q15"> C. Existing fitness-center members</div>
-          <div class="option"><input type="radio" name="m2q15"> D. Community members of all fitness levels</div>
+          <div class="option"><input type="radio" name="m2q15" id="m2q15a"><label for="m2q15a"> A. Expert personal trainers</label></div>
+          <div class="option"><input type="radio" name="m2q15" id="m2q15b"><label for="m2q15b"> B. Top-tier athletes</label></div>
+          <div class="option"><input type="radio" name="m2q15" id="m2q15c"><label for="m2q15c"> C. Existing fitness-center members</label></div>
+          <div class="option"><input type="radio" name="m2q15" id="m2q15d"><label for="m2q15d"> D. Community members of all fitness levels</label></div>
         </div>
       </div>
     </div>
@@ -865,42 +985,42 @@
         
         <div class="question-number">16. Which of the following best states a main idea of the passage?</div>
         <div class="options">
-          <div class="option"><input type="radio" name="m2q16"> A. Effective marketing strategies focus on increasing product options.</div>
-          <div class="option"><input type="radio" name="m2q16"> B. Modern consumer culture is driven by a demand for fewer products.</div>
-          <div class="option"><input type="radio" name="m2q16"> C. Individualism enhances consumer contentment.</div>
-          <div class="option"><input type="radio" name="m2q16"> D. Limiting consumer choices can lead to higher satisfaction.</div>
+          <div class="option"><input type="radio" name="m2q16" id="m2q16a"><label for="m2q16a"> A. Effective marketing strategies focus on increasing product options.</label></div>
+          <div class="option"><input type="radio" name="m2q16" id="m2q16b"><label for="m2q16b"> B. Modern consumer culture is driven by a demand for fewer products.</label></div>
+          <div class="option"><input type="radio" name="m2q16" id="m2q16c"><label for="m2q16c"> C. Individualism enhances consumer contentment.</label></div>
+          <div class="option"><input type="radio" name="m2q16" id="m2q16d"><label for="m2q16d"> D. Limiting consumer choices can lead to higher satisfaction.</label></div>
         </div>
         
         <div class="question-number">17. What is one effect of decision fatigue as mentioned in the passage?</div>
         <div class="options">
-          <div class="option"><input type="radio" name="m2q17"> A. Desire to make the same choices as other consumers</div>
-          <div class="option"><input type="radio" name="m2q17"> B. Anxiety about making the wrong choice</div>
-          <div class="option"><input type="radio" name="m2q17"> C. Preference for consumer cultures</div>
-          <div class="option"><input type="radio" name="m2q17"> D. Enhanced freedom to choose</div>
+          <div class="option"><input type="radio" name="m2q17" id="m2q17a"><label for="m2q17a"> A. Desire to make the same choices as other consumers</label></div>
+          <div class="option"><input type="radio" name="m2q17" id="m2q17b"><label for="m2q17b"> B. Anxiety about making the wrong choice</label></div>
+          <div class="option"><input type="radio" name="m2q17" id="m2q17c"><label for="m2q17c"> C. Preference for consumer cultures</label></div>
+          <div class="option"><input type="radio" name="m2q17" id="m2q17d"><label for="m2q17d"> D. Enhanced freedom to choose</label></div>
         </div>
         
         <div class="question-number">18. Why does the author mention Sheena lyengar's experiment?</div>
         <div class="options">
-          <div class="option"><input type="radio" name="m2q18"> A. To highlight the effectiveness of marketing strategies</div>
-          <div class="option"><input type="radio" name="m2q18"> B. To explain the methodology used in consumer psychology</div>
-          <div class="option"><input type="radio" name="m2q18"> C. To provide evidence supporting the paradox of choice</div>
-          <div class="option"><input type="radio" name="m2q18"> D. To criticize the abundance of products in modern markets</div>
+          <div class="option"><input type="radio" name="m2q18" id="m2q18a"><label for="m2q18a"> A. To highlight the effectiveness of marketing strategies</label></div>
+          <div class="option"><input type="radio" name="m2q18" id="m2q18b"><label for="m2q18b"> B. To explain the methodology used in consumer psychology</label></div>
+          <div class="option"><input type="radio" name="m2q18" id="m2q18c"><label for="m2q18c"> C. To provide evidence supporting the paradox of choice</label></div>
+          <div class="option"><input type="radio" name="m2q18" id="m2q18d"><label for="m2q18d"> D. To criticize the abundance of products in modern markets</label></div>
         </div>
         
         <div class="question-number">19. The word "curating" in the passage is closest in meaning to</div>
         <div class="options">
-          <div class="option"><input type="radio" name="m2q19"> A. eliminating</div>
-          <div class="option"><input type="radio" name="m2q19"> B. organizing</div>
-          <div class="option"><input type="radio" name="m2q19"> C. increasing</div>
-          <div class="option"><input type="radio" name="m2q19"> D. changing</div>
+          <div class="option"><input type="radio" name="m2q19" id="m2q19a"><label for="m2q19a"> A. eliminating</label></div>
+          <div class="option"><input type="radio" name="m2q19" id="m2q19b"><label for="m2q19b"> B. organizing</label></div>
+          <div class="option"><input type="radio" name="m2q19" id="m2q19c"><label for="m2q19c"> C. increasing</label></div>
+          <div class="option"><input type="radio" name="m2q19" id="m2q19d"><label for="m2q19d"> D. changing</label></div>
         </div>
         
         <div class="question-number">20. What can be inferred about consumers in collectivist cultures?</div>
         <div class="options">
-          <div class="option"><input type="radio" name="m2q20"> A. They tend to report lower levels of satisfaction.</div>
-          <div class="option"><input type="radio" name="m2q20"> B. They are more affected by the paradox of choice.</div>
-          <div class="option"><input type="radio" name="m2q20"> C. They generally have fewer choices available.</div>
-          <div class="option"><input type="radio" name="m2q20"> D. They prefer individual decision-making.</div>
+          <div class="option"><input type="radio" name="m2q20" id="m2q20a"><label for="m2q20a"> A. They tend to report lower levels of satisfaction.</label></div>
+          <div class="option"><input type="radio" name="m2q20" id="m2q20b"><label for="m2q20b"> B. They are more affected by the paradox of choice.</label></div>
+          <div class="option"><input type="radio" name="m2q20" id="m2q20c"><label for="m2q20c"> C. They generally have fewer choices available.</label></div>
+          <div class="option"><input type="radio" name="m2q20" id="m2q20d"><label for="m2q20d"> D. They prefer individual decision-making.</label></div>
         </div>
       </div>
     </div>
@@ -913,7 +1033,7 @@
 
   <!-- ========== 口语部分 ========== -->
   <div id="speakingPage">
-    <!-- 考试规则折叠面板 - 从你的代码继承 -->
+    <!-- 考试规则折叠面板 -->
     <div class="rules-container">
       <div class="rules-header" onclick="toggleRules()">
         <span>📋 点击查看考试规则和说明</span>
@@ -1548,4 +1668,3 @@
   </script>
 </body>
 </html>
-<!-- force rebuild: added writing section from PDF -->
