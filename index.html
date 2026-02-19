@@ -4,13 +4,36 @@
   <meta charset="UTF-8">
   <title>TOEFL Mock Exam - Full Test</title>
   <style>
+    /* 全局样式优化 */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    
     body {
-      font-family: Arial, sans-serif;
-      max-width: 1000px;
-      margin: 40px auto;
+      font-family: 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      max-width: 1100px;
+      margin: 0 auto;
       line-height: 1.6;
-      padding: 0 30px;
-      background: #fafafa;
+      padding: 30px 40px;
+      background: linear-gradient(135deg, #f5f7fa 0%, #e9ecf2 100%);
+      min-height: 100vh;
+    }
+    
+    /* 卡片样式 */
+    .card, .exam-overview, .section {
+      background: white;
+      border-radius: 24px;
+      padding: 30px;
+      margin-bottom: 25px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.05), 0 1px 3px rgba(0,0,0,0.1);
+      transition: transform 0.2s, box-shadow 0.2s;
+      border: 1px solid rgba(255,255,255,0.5);
+    }
+    
+    .card:hover, .section:hover {
+      box-shadow: 0 15px 40px rgba(0,0,0,0.08);
     }
     
     /* 考试头部 */
@@ -18,76 +41,61 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      background: white;
-      padding: 15px 25px;
-      border-radius: 12px;
+      background: rgba(255,255,255,0.9);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      padding: 15px 30px;
+      border-radius: 60px;
       margin-bottom: 30px;
       position: sticky;
       top: 20px;
       z-index: 100;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+      border: 1px solid rgba(255,255,255,0.5);
     }
     
-    .timer-container {
-      display: flex;
-      align-items: center;
-      gap: 15px;
+    .status-badge {
+      padding: 8px 20px;
+      border-radius: 40px;
+      font-size: 15px;
+      font-weight: 600;
+      letter-spacing: 0.3px;
+      background: #4CAF50;
+      color: white;
+      box-shadow: 0 4px 10px rgba(76, 175, 80, 0.3);
     }
+    
+    .status-badge.reading { background: #2196F3; box-shadow: 0 4px 10px rgba(33, 150, 243, 0.3); }
+    .status-badge.speaking { background: #9C27B0; box-shadow: 0 4px 10px rgba(156, 39, 176, 0.3); }
+    .status-badge.writing { background: #FF9800; box-shadow: 0 4px 10px rgba(255, 152, 0, 0.3); }
+    .status-badge.warning { background: #ff9800; }
+    .status-badge.terminated { background: #f44336; }
+    .status-badge.waiting { background: #9e9e9e; }
     
     .timer {
-      font-size: 32px;
-      font-weight: bold;
+      font-size: 36px;
+      font-weight: 700;
       color: #1976D2;
-      background: #e8f4fd;
+      background: white;
       padding: 8px 25px;
       border-radius: 50px;
-      font-family: monospace;
-      letter-spacing: 2px;
+      font-family: 'Courier New', monospace;
+      letter-spacing: 3px;
+      box-shadow: 0 4px 15px rgba(25, 118, 210, 0.15);
+      border: 1px solid rgba(25, 118, 210, 0.2);
     }
     
     .timer.warning {
       color: #ff4444;
-      background: #ffe8e8;
+      background: #fff0f0;
       animation: pulse 1s infinite;
+      box-shadow: 0 4px 15px rgba(255, 68, 68, 0.2);
     }
     
     @keyframes pulse {
-      0% { opacity: 1; }
-      50% { opacity: 0.7; }
-      100% { opacity: 1; }
-    }
-    
-    .status-badge {
-      background: #4CAF50;
-      color: white;
-      padding: 6px 16px;
-      border-radius: 30px;
-      font-size: 14px;
-      font-weight: 500;
-    }
-    
-    .status-badge.reading {
-      background: #2196F3;
-    }
-    
-    .status-badge.speaking {
-      background: #9C27B0;
-    }
-    
-    .status-badge.writing {
-      background: #FF9800;
-    }
-    
-    .status-badge.warning {
-      background: #ff9800;
-    }
-    
-    .status-badge.terminated {
-      background: #f44336;
-    }
-    
-    .status-badge.waiting {
-      background: #9e9e9e;
+      0% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.8; transform: scale(1.02); }
+      100% { opacity: 1; transform: scale(1); }
     }
     
     /* 页面显示控制 */
@@ -101,346 +109,358 @@
       display: block;
     }
     
-    /* 考试概览卡片 */
-    .exam-overview {
-      background: white;
-      border-radius: 16px;
-      padding: 30px;
-      margin-bottom: 30px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-    }
-    
-    .exam-overview h2 {
-      margin-top: 0;
-      color: #333;
-      border-bottom: 2px solid #f0f0f0;
-      padding-bottom: 15px;
-    }
-    
-    .structure-table {
+    /* 表格样式优化 */
+    .structure-table, .task-table {
       width: 100%;
-      border-collapse: collapse;
-      margin: 20px 0;
+      border-collapse: separate;
+      border-spacing: 0 8px;
+      margin: 25px 0;
     }
     
-    .structure-table th {
-      background: #f5f5f5;
-      padding: 12px;
-      text-align: left;
+    .structure-table th, .task-table th {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 15px;
       font-weight: 600;
-      color: #1976D2;
+      font-size: 15px;
+      letter-spacing: 0.5px;
+      border-radius: 12px 12px 0 0;
     }
     
-    .structure-table td {
-      padding: 12px;
-      border-bottom: 1px solid #eee;
+    .structure-table td, .task-table td {
+      background: white;
+      padding: 18px 15px;
+      border-radius: 12px;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.02);
+      border: 1px solid #f0f0f0;
     }
     
     .structure-table tr:last-child td {
-      border-bottom: none;
-    }
-    
-    .structure-table tr:hover {
-      background: #f9f9f9;
+      background: linear-gradient(135deg, #f5f7fa 0%, #e9ecf2 100%);
+      font-weight: 700;
+      border: 2px solid #2196F3;
     }
     
     .highlight {
-      background: #e8f4fd;
-      font-weight: bold;
+      background: linear-gradient(135deg, #E3F2FD 0%, #BBDEFB 100%) !important;
+      font-weight: 600;
     }
     
-    .total-row {
-      background: #f0f7ff;
-      font-weight: bold;
-    }
-    
-    /* 开始考试按钮 */
-    .start-exam-btn {
-      background: #4CAF50;
+    /* 按钮样式优化 */
+    .start-exam-btn, .nav-btn, .submit-btn {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
       color: white;
       border: none;
-      padding: 15px 40px;
+      padding: 15px 45px;
       font-size: 18px;
+      font-weight: 600;
       border-radius: 50px;
       cursor: pointer;
       transition: all 0.3s;
-      margin: 20px 0;
-      box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3);
+      box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+      letter-spacing: 1px;
+      margin: 10px 0;
     }
     
-    .start-exam-btn:hover {
-      background: #45a049;
-      transform: translateY(-2px);
-      box-shadow: 0 6px 16px rgba(76, 175, 80, 0.4);
-    }
-    
-    /* 模块导航按钮 */
-    .nav-buttons {
-      display: flex;
-      justify-content: space-between;
-      margin: 30px 0;
+    .start-exam-btn:hover, .nav-btn:hover, .submit-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 15px 30px rgba(102, 126, 234, 0.4);
     }
     
     .nav-btn {
-      padding: 12px 30px;
-      background: #2196F3;
-      color: white;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
+      padding: 12px 35px;
       font-size: 16px;
+      background: linear-gradient(135deg, #2196F3 0%, #1976D2 100%);
     }
     
-    .nav-btn:hover:not(:disabled) {
-      background: #1976D2;
-    }
-    
-    .nav-btn:disabled {
-      background: #ccc;
-      cursor: not-allowed;
-    }
-    
-    /* 警告弹窗 */
-    .warning-modal {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: rgba(0,0,0,0.5);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 1000;
-    }
-    
-    .warning-content {
-      background: white;
-      padding: 30px;
-      border-radius: 16px;
+    .submit-btn {
+      background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+      box-shadow: 0 10px 20px rgba(76, 175, 80, 0.3);
+      font-size: 20px;
+      padding: 18px 50px;
+      width: 100%;
       max-width: 400px;
+      margin: 30px auto;
+      display: block;
+    }
+    
+    /* 标题样式 */
+    h1 {
       text-align: center;
-      box-shadow: 0 20px 40px rgba(0,0,0,0.2);
-    }
-    
-    .warning-content.warning {
-      border-top: 4px solid #ff9800;
-    }
-    
-    .warning-content.terminated {
-      border-top: 4px solid #f44336;
-    }
-    
-    .warning-content button {
-      margin-top: 20px;
-      padding: 10px 30px;
-      background: #2196F3;
-      color: white;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-    }
-    
-    .hidden {
-      display: none !important;
-    }
-    
-    /* 考试部分样式 */
-    .section {
-      background: white;
-      border-radius: 16px;
-      padding: 25px;
       margin-bottom: 30px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+      color: #1976D2;
+      font-size: 32px;
+      font-weight: 700;
     }
     
-    .section h2 {
-      margin-top: 0;
+    h2 {
       color: #1976D2;
+      font-size: 24px;
+      font-weight: 600;
+      margin: 0 0 20px 0;
+      border-bottom: 2px solid #f0f0f0;
+      padding-bottom: 15px;
       display: flex;
       align-items: center;
       gap: 10px;
     }
     
-    .section-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      border-bottom: 2px solid #f0f0f0;
-      padding-bottom: 15px;
-      margin-bottom: 20px;
-    }
-    
+    /* 任务描述 */
     .task-description {
-      background: #e8f4fd;
-      padding: 15px;
-      border-radius: 8px;
-      margin-bottom: 20px;
-    }
-    
-    .task-table {
-      width: 100%;
-      border-collapse: collapse;
-      margin: 20px 0;
-    }
-    
-    .task-table th, .task-table td {
-      border: 1px solid #ddd;
-      padding: 12px;
-      text-align: left;
-    }
-    
-    .task-table th {
-      background: #f5f5f5;
-    }
-    
-    .question-item {
-      margin: 20px 0;
+      background: linear-gradient(135deg, #e8f4fd 0%, #d1e9ff 100%);
       padding: 20px;
-      background: #f9f9f9;
-      border-radius: 12px;
-      border-left: 4px solid #2196F3;
+      border-radius: 16px;
+      margin-bottom: 20px;
+      border-left: 6px solid #2196F3;
+    }
+    
+    /* 题目卡片 */
+    .question-item {
+      background: linear-gradient(135deg, #f8faff 0%, #f5f8ff 100%);
+      border-radius: 20px;
+      padding: 25px;
+      margin: 20px 0;
+      border-left: 6px solid #2196F3;
+      transition: all 0.2s;
+    }
+    
+    .question-item:hover {
+      transform: translateX(5px);
+      box-shadow: 0 5px 15px rgba(33, 150, 243, 0.1);
     }
     
     .question-number {
-      font-weight: bold;
+      font-weight: 700;
       color: #1976D2;
-      margin-bottom: 10px;
-      font-size: 16px;
+      margin-bottom: 15px;
+      font-size: 18px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
     }
     
-    .passage {
+    .passage, .email {
       background: white;
-      padding: 15px;
-      border-radius: 8px;
+      padding: 20px;
+      border-radius: 16px;
       border: 1px solid #e0e0e0;
       margin: 15px 0;
+      box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
     }
     
-    .email {
-      background: #f0f7ff;
-      padding: 15px;
-      border-radius: 8px;
-      font-family: monospace;
-      margin: 15px 0;
+    /* 填空样式 */
+    .fill-blank-container {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 4px;
+      margin: 20px 0;
+      font-size: 18px;
+      background: white;
+      padding: 20px;
+      border-radius: 16px;
     }
     
-    /* 选择题样式 - 修复 */
+    .fill-blank-input {
+      width: 45px;
+      height: 45px;
+      text-align: center;
+      font-size: 20px;
+      border: 2px solid #e0e0e0;
+      border-radius: 12px;
+      margin: 0 2px;
+      padding: 0;
+      transition: all 0.2s;
+      background: white;
+      font-weight: 600;
+      color: #2196F3;
+    }
+    
+    .fill-blank-input:focus {
+      border-color: #2196F3;
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(33, 150, 243, 0.2);
+      transform: scale(1.05);
+    }
+    
+    .fill-blank-text {
+      margin: 0 4px;
+      font-weight: 500;
+      color: #333;
+    }
+    
+    /* 选择题样式 */
     .options {
-      margin: 15px 0;
+      margin: 20px 0;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 12px;
     }
     
     .option {
-      margin: 10px 0;
+      background: white;
+      border: 2px solid #e0e0e0;
+      border-radius: 16px;
+      padding: 12px 20px;
       display: flex;
       align-items: center;
+      transition: all 0.2s;
+      cursor: pointer;
+    }
+    
+    .option:hover {
+      border-color: #2196F3;
+      background: #f5f9ff;
+      transform: translateY(-2px);
+      box-shadow: 0 5px 10px rgba(33, 150, 243, 0.1);
     }
     
     .option input[type="radio"] {
-      width: 18px;
-      height: 18px;
-      margin-right: 10px;
+      width: 20px;
+      height: 20px;
+      margin-right: 15px;
       cursor: pointer;
+      accent-color: #2196F3;
     }
     
     .option label {
       cursor: pointer;
       font-size: 16px;
       color: #333;
+      font-weight: 500;
+      flex: 1;
     }
     
-    /* 填空输入框样式 - 新增 */
-    .fill-blank-input {
-      width: 40px;
-      height: 35px;
-      text-align: center;
-      font-size: 18px;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-      margin: 0 2px;
-      padding: 0;
-    }
-    
-    .fill-blank-container {
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      gap: 2px;
-      margin: 15px 0;
-      font-size: 18px;
-      line-height: 2.5;
-    }
-    
-    .fill-blank-text {
-      margin: 0 2px;
-    }
-    
-    /* 口语部分样式 */
-    .question {
-      margin-top: 30px;
-    }
-    
-    button {
-      padding: 10px 20px;
+    /* 写作样式 */
+    textarea {
+      width: 100%;
+      padding: 20px;
+      border: 2px solid #e0e0e0;
+      border-radius: 20px;
+      font-family: inherit;
       font-size: 16px;
+      margin-top: 15px;
+      min-height: 200px;
+      transition: all 0.2s;
+      resize: vertical;
+      background: white;
+    }
+    
+    textarea:focus {
+      border-color: #2196F3;
+      outline: none;
+      box-shadow: 0 0 0 4px rgba(33, 150, 243, 0.1);
+    }
+    
+    .word-count {
+      text-align: right;
+      color: #666;
+      font-size: 14px;
       margin-top: 10px;
-      background: #2196F3;
+      font-weight: 500;
+    }
+    
+    /* 录音按钮 */
+    .record-btn {
+      background: linear-gradient(135deg, #f44336 0%, #d32f2f 100%);
       color: white;
       border: none;
-      border-radius: 8px;
+      padding: 15px 30px;
+      border-radius: 50px;
+      font-size: 16px;
+      font-weight: 600;
       cursor: pointer;
+      transition: all 0.3s;
+      box-shadow: 0 5px 15px rgba(244, 67, 54, 0.3);
     }
     
-    button:hover {
-      background: #1976D2;
+    .record-btn:hover {
+      transform: scale(1.05);
+      box-shadow: 0 8px 20px rgba(244, 67, 54, 0.4);
     }
     
+    .record-btn.recording {
+      animation: pulse-red 1.5s infinite;
+    }
+    
+    @keyframes pulse-red {
+      0% { opacity: 1; }
+      50% { opacity: 0.7; transform: scale(1.02); }
+      100% { opacity: 1; }
+    }
+    
+    /* 音频播放器 */
     audio {
-      margin-top: 10px;
       width: 100%;
+      margin: 15px 0;
+      border-radius: 30px;
     }
     
-    /* 考试规则折叠面板 */
+    /* 视频网格 */
+    .video-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
+      margin-top: 20px;
+    }
+    
+    .video-item {
+      background: white;
+      border-radius: 20px;
+      padding: 15px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+      transition: all 0.2s;
+    }
+    
+    .video-item:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    }
+    
+    .video-item video {
+      width: 100%;
+      height: auto;
+      border-radius: 12px;
+    }
+    
+    /* 折叠面板 */
     .rules-container {
       margin-bottom: 30px;
-      border: 1px solid #e0e0e0;
-      border-radius: 12px;
+      border-radius: 20px;
       overflow: hidden;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.05);
     }
     
     .rules-header {
-      background-color: #e8f4fd;
-      padding: 15px 20px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 20px 25px;
       cursor: pointer;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      transition: background-color 0.3s;
+      transition: all 0.3s;
     }
     
     .rules-header:hover {
-      background-color: #d1e9ff;
+      background: linear-gradient(135deg, #5a6fd6 0%, #6a3f94 100%);
     }
     
     .rules-header span {
       font-weight: 600;
-      color: #1976D2;
-      font-size: 16px;
+      font-size: 18px;
     }
     
     .toggle-icon {
-      font-size: 20px;
-      color: #1976D2;
+      font-size: 24px;
       transition: transform 0.3s;
     }
     
     .rules-content {
-      padding: 25px;
-      background-color: white;
+      padding: 30px;
+      background: white;
       display: none;
-      border-top: 1px solid #e0e0e0;
-      max-height: 400px;
+      max-height: 500px;
       overflow-y: auto;
     }
     
@@ -462,36 +482,86 @@
       padding: 5px 10px;
     }
     
-    .close-rules button:hover {
-      color: #1976D2;
+    /* 警告弹窗 */
+    .warning-modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0,0,0,0.5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      backdrop-filter: blur(5px);
     }
     
-    /* 写作部分样式 */
-    .word-count {
-      text-align: right;
-      color: #666;
-      font-size: 14px;
-      margin-top: 5px;
+    .warning-content {
+      background: white;
+      padding: 40px;
+      border-radius: 30px;
+      max-width: 450px;
+      text-align: center;
+      box-shadow: 0 30px 60px rgba(0,0,0,0.3);
+      animation: slideIn 0.3s;
     }
     
-    textarea {
-      width: 100%;
-      padding: 12px;
-      border: 1px solid #ddd;
-      border-radius: 8px;
-      font-family: inherit;
-      font-size: 14px;
-      margin-top: 10px;
-      min-height: 150px;
+    @keyframes slideIn {
+      from { transform: translateY(-30px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+    
+    .warning-content.warning {
+      border-top: 6px solid #ff9800;
+    }
+    
+    .warning-content.terminated {
+      border-top: 6px solid #f44336;
+    }
+    
+    .warning-content button {
+      margin-top: 25px;
+      padding: 12px 40px;
+      background: #2196F3;
+      color: white;
+      border: none;
+      border-radius: 50px;
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: 600;
+    }
+    
+    .hidden {
+      display: none !important;
+    }
+    
+    /* 导航按钮容器 */
+    .nav-buttons {
+      display: flex;
+      justify-content: space-between;
+      margin: 30px 0;
     }
     
     /* 页脚 */
     .footer {
-      margin-top: 40px;
-      padding-top: 20px;
-      border-top: 1px solid #eee;
+      margin-top: 60px;
+      padding-top: 30px;
+      border-top: 2px solid rgba(255,255,255,0.3);
       text-align: center;
       color: #666;
+    }
+    
+    .footer a {
+      color: #2196F3;
+      text-decoration: none;
+      font-weight: 600;
+      transition: color 0.2s;
+    }
+    
+    .footer a:hover {
+      color: #1976D2;
+      text-decoration: underline;
     }
   </style>
 </head>
@@ -520,7 +590,7 @@
   <div id="rulesPage">
     <div class="exam-overview">
       <h2>📋 新托福考试结构</h2>
-      <p>本模考系统严格按照新托福考试格式设计，总时长约2小时。请仔细阅读以下考试结构：</p>
+      <p style="font-size: 16px; color: #666; margin-bottom: 25px;">本模考系统严格按照新托福考试格式设计，总时长约2小时。请仔细阅读以下考试结构：</p>
       
       <table class="structure-table">
         <thead>
@@ -571,7 +641,6 @@
       
       <div style="text-align: center;">
         <button class="start-exam-btn" onclick="startExam()">✅ 我已阅读规则，开始考试</button>
-        <p style="color: #999; font-size: 14px; margin-top: 10px;">点击开始后，将进入阅读部分</p>
       </div>
     </div>
   </div>
@@ -628,70 +697,69 @@
     </div>
   </div>
 
-  <!-- Module 1 题目 - 修复版 -->
+  <!-- Module 1 题目 -->
   <div id="module1Page">
     <h1>📖 阅读 Module 1</h1>
     
-    <!-- 第1-10题：Complete the Words - 修复为每个字母一个输入框 -->
+    <!-- 第1-10题：Complete the Words -->
     <div class="section">
       <h2>Complete the Words (1-10)</h2>
-      <p class="task-description">Fill in the missing letters in the paragraph.</p>
+      <div class="task-description">Fill in the missing letters in the paragraph.</div>
       
       <div class="question-item">
-        <div class="question-number">Questions 1-10</div>
+        <div class="question-number">🔤 Questions 1-10</div>
         <div class="passage">
           <p>We know from drawings that have been preserved in caves for over 10,000 years that early humans performed dances as a group activity.</p>
           <div class="fill-blank-container">
             <span class="fill-blank-text">We</span>
-            <input type="text" class="fill-blank-input" maxlength="1" placeholder="_">
-            <input type="text" class="fill-blank-input" maxlength="1" placeholder="_">
-            <input type="text" class="fill-blank-input" maxlength="1" placeholder="_">
+            <input type="text" class="fill-blank-input" maxlength="1" placeholder="_" onchange="saveAnswer('reading1_1', this.value)">
+            <input type="text" class="fill-blank-input" maxlength="1" placeholder="_" onchange="saveAnswer('reading1_2', this.value)">
+            <input type="text" class="fill-blank-input" maxlength="1" placeholder="_" onchange="saveAnswer('reading1_3', this.value)">
             <span class="fill-blank-text">think</span>
-            <input type="text" class="fill-blank-input" maxlength="1" placeholder="_">
-            <input type="text" class="fill-blank-input" maxlength="1" placeholder="_">
+            <input type="text" class="fill-blank-input" maxlength="1" placeholder="_" onchange="saveAnswer('reading1_4', this.value)">
+            <input type="text" class="fill-blank-input" maxlength="1" placeholder="_" onchange="saveAnswer('reading1_5', this.value)">
             <span class="fill-blank-text">prehistoric</span>
-            <input type="text" class="fill-blank-input" maxlength="1" placeholder="_">
-            <input type="text" class="fill-blank-input" maxlength="1" placeholder="_">
-            <input type="text" class="fill-blank-input" maxlength="1" placeholder="_">
+            <input type="text" class="fill-blank-input" maxlength="1" placeholder="_" onchange="saveAnswer('reading1_6', this.value)">
+            <input type="text" class="fill-blank-input" maxlength="1" placeholder="_" onchange="saveAnswer('reading1_7', this.value)">
+            <input type="text" class="fill-blank-input" maxlength="1" placeholder="_" onchange="saveAnswer('reading1_8', this.value)">
             <span class="fill-blank-text">concentrated on</span>
-            <input type="text" class="fill-blank-input" maxlength="1" placeholder="_">
-            <input type="text" class="fill-blank-input" maxlength="1" placeholder="_">
+            <input type="text" class="fill-blank-input" maxlength="1" placeholder="_" onchange="saveAnswer('reading1_9', this.value)">
+            <input type="text" class="fill-blank-input" maxlength="1" placeholder="_" onchange="saveAnswer('reading1_10', this.value)">
             <span class="fill-blank-text">on ba</span>
-            <input type="text" class="fill-blank-input" maxlength="1" placeholder="_">
-            <input type="text" class="fill-blank-input" maxlength="1" placeholder="_">
-            <input type="text" class="fill-blank-input" maxlength="1" placeholder="_">
+            <input type="text" class="fill-blank-input" maxlength="1" placeholder="_" onchange="saveAnswer('reading1_11', this.value)">
+            <input type="text" class="fill-blank-input" maxlength="1" placeholder="_" onchange="saveAnswer('reading1_12', this.value)">
+            <input type="text" class="fill-blank-input" maxlength="1" placeholder="_" onchange="saveAnswer('reading1_13', this.value)">
             <span class="fill-blank-text">survival.</span>
           </div>
           <div class="fill-blank-container">
             <span class="fill-blank-text">How</span>
-            <input type="text" class="fill-blank-input" maxlength="1" placeholder="_">
-            <input type="text" class="fill-blank-input" maxlength="1" placeholder="_">
-            <input type="text" class="fill-blank-input" maxlength="1" placeholder="_">
+            <input type="text" class="fill-blank-input" maxlength="1" placeholder="_" onchange="saveAnswer('reading1_14', this.value)">
+            <input type="text" class="fill-blank-input" maxlength="1" placeholder="_" onchange="saveAnswer('reading1_15', this.value)">
+            <input type="text" class="fill-blank-input" maxlength="1" placeholder="_" onchange="saveAnswer('reading1_16', this.value)">
             <span class="fill-blank-text">it i</span>
-            <input type="text" class="fill-blank-input" maxlength="1" placeholder="_">
+            <input type="text" class="fill-blank-input" maxlength="1" placeholder="_" onchange="saveAnswer('reading1_17', this.value)">
             <span class="fill-blank-text">clear fr</span>
-            <input type="text" class="fill-blank-input" maxlength="1" placeholder="_">
-            <input type="text" class="fill-blank-input" maxlength="1" placeholder="_">
+            <input type="text" class="fill-blank-input" maxlength="1" placeholder="_" onchange="saveAnswer('reading1_18', this.value)">
+            <input type="text" class="fill-blank-input" maxlength="1" placeholder="_" onchange="saveAnswer('reading1_19', this.value)">
             <span class="fill-blank-text">the rec</span>
-            <input type="text" class="fill-blank-input" maxlength="1" placeholder="_">
-            <input type="text" class="fill-blank-input" maxlength="1" placeholder="_">
+            <input type="text" class="fill-blank-input" maxlength="1" placeholder="_" onchange="saveAnswer('reading1_20', this.value)">
+            <input type="text" class="fill-blank-input" maxlength="1" placeholder="_" onchange="saveAnswer('reading1_21', this.value)">
             <span class="fill-blank-text">that dan</span>
-            <input type="text" class="fill-blank-input" maxlength="1" placeholder="_">
-            <input type="text" class="fill-blank-input" maxlength="1" placeholder="_">
-            <input type="text" class="fill-blank-input" maxlength="1" placeholder="_">
+            <input type="text" class="fill-blank-input" maxlength="1" placeholder="_" onchange="saveAnswer('reading1_22', this.value)">
+            <input type="text" class="fill-blank-input" maxlength="1" placeholder="_" onchange="saveAnswer('reading1_23', this.value)">
+            <input type="text" class="fill-blank-input" maxlength="1" placeholder="_" onchange="saveAnswer('reading1_24', this.value)">
             <span class="fill-blank-text">was important to them.</span>
           </div>
-          <p>They recorded more drawings of dances than of any other group activity. Dances served various purposes, including ritualistic communication with the divine, storytelling, and social cohesion.</p>
         </div>
       </div>
     </div>
 
-    <!-- 第11-12题：Read a notice - 修复选择题 -->
+    <!-- 第11-12题：Read a notice -->
     <div class="section">
       <h2>Read a notice (11-12)</h2>
       
       <div class="question-item">
-        <div class="question-number">Questions 11-12</div>
+        <div class="question-number">📋 Questions 11-12</div>
         <div class="email">
           <h3>Municipal Charter</h3>
           <p>Sign up for paperless billing statements today.</p>
@@ -700,18 +768,18 @@
         
         <div class="question-number">11. What type of business issued the notice?</div>
         <div class="options">
-          <div class="option"><input type="radio" name="q11" id="q11a"><label for="q11a"> A. An Internet provider</label></div>
-          <div class="option"><input type="radio" name="q11" id="q11b"><label for="q11b"> B. A computer company</label></div>
-          <div class="option"><input type="radio" name="q11" id="q11c"><label for="q11c"> C. A paper company</label></div>
-          <div class="option"><input type="radio" name="q11" id="q11d"><label for="q11d"> D. A bank</label></div>
+          <div class="option"><input type="radio" name="q11" id="q11a" value="A" onchange="saveAnswer('q11', this.value)"><label for="q11a"> A. An Internet provider</label></div>
+          <div class="option"><input type="radio" name="q11" id="q11b" value="B" onchange="saveAnswer('q11', this.value)"><label for="q11b"> B. A computer company</label></div>
+          <div class="option"><input type="radio" name="q11" id="q11c" value="C" onchange="saveAnswer('q11', this.value)"><label for="q11c"> C. A paper company</label></div>
+          <div class="option"><input type="radio" name="q11" id="q11d" value="D" onchange="saveAnswer('q11', this.value)"><label for="q11d"> D. A bank</label></div>
         </div>
         
         <div class="question-number">12. How can customers enroll in paperless billing?</div>
         <div class="options">
-          <div class="option"><input type="radio" name="q12" id="q12a"><label for="q12a"> A. By visiting a Municipal Charter office</label></div>
-          <div class="option"><input type="radio" name="q12" id="q12b"><label for="q12b"> B. By accessing the Municipal Charter website</label></div>
-          <div class="option"><input type="radio" name="q12" id="q12c"><label for="q12c"> C. By using the Municipal Charter app</label></div>
-          <div class="option"><input type="radio" name="q12" id="q12d"><label for="q12d"> D. By calling a Municipal Charter customer service representative</label></div>
+          <div class="option"><input type="radio" name="q12" id="q12a" value="A" onchange="saveAnswer('q12', this.value)"><label for="q12a"> A. By visiting a Municipal Charter office</label></div>
+          <div class="option"><input type="radio" name="q12" id="q12b" value="B" onchange="saveAnswer('q12', this.value)"><label for="q12b"> B. By accessing the Municipal Charter website</label></div>
+          <div class="option"><input type="radio" name="q12" id="q12c" value="C" onchange="saveAnswer('q12', this.value)"><label for="q12c"> C. By using the Municipal Charter app</label></div>
+          <div class="option"><input type="radio" name="q12" id="q12d" value="D" onchange="saveAnswer('q12', this.value)"><label for="q12d"> D. By calling a Municipal Charter customer service representative</label></div>
         </div>
       </div>
     </div>
@@ -721,7 +789,7 @@
       <h2>Read a social media post (13-15)</h2>
       
       <div class="question-item">
-        <div class="question-number">Questions 13-15</div>
+        <div class="question-number">📱 Questions 13-15</div>
         <div class="passage">
           <h3>Sofia Baker</h3>
           <p>Every Saturday, our local farmer's market is the place to be! Fresh fruits, veggies, homemade goodies, and unique crafts await you. The Thompson family's organic produce is a must-try, known for its quality and cordial service. Their stall is always bustling with customers eager to buy fresh, pesticide-free vegetables from the welcoming staff.</p>
@@ -731,26 +799,26 @@
         
         <div class="question-number">13. What is the main purpose of the post?</div>
         <div class="options">
-          <div class="option"><input type="radio" name="q13" id="q13a"><label for="q13a"> A. To explain the benefits of organic farming</label></div>
-          <div class="option"><input type="radio" name="q13" id="q13b"><label for="q13b"> B. To describe the variety of products available at the farmer's market</label></div>
-          <div class="option"><input type="radio" name="q13" id="q13c"><label for="q13c"> C. To compare different farmer's markets in the area</label></div>
-          <div class="option"><input type="radio" name="q13" id="q13d"><label for="q13d"> D. To offer advice on starting a stall at the farmer's market</label></div>
+          <div class="option"><input type="radio" name="q13" id="q13a" value="A" onchange="saveAnswer('q13', this.value)"><label for="q13a"> A. To explain the benefits of organic farming</label></div>
+          <div class="option"><input type="radio" name="q13" id="q13b" value="B" onchange="saveAnswer('q13', this.value)"><label for="q13b"> B. To describe the variety of products available at the farmer's market</label></div>
+          <div class="option"><input type="radio" name="q13" id="q13c" value="C" onchange="saveAnswer('q13', this.value)"><label for="q13c"> C. To compare different farmer's markets in the area</label></div>
+          <div class="option"><input type="radio" name="q13" id="q13d" value="D" onchange="saveAnswer('q13', this.value)"><label for="q13d"> D. To offer advice on starting a stall at the farmer's market</label></div>
         </div>
         
         <div class="question-number">14. What reason is given for the popularity of the Thompson family's stall?</div>
         <div class="options">
-          <div class="option"><input type="radio" name="q14" id="q14a"><label for="q14a"> A. They offer cooking tips and recipes.</label></div>
-          <div class="option"><input type="radio" name="q14" id="q14b"><label for="q14b"> B. They offer the lowest prices at the market.</label></div>
-          <div class="option"><input type="radio" name="q14" id="q14c"><label for="q14c"> C. They provide friendly service and excellent products.</label></div>
-          <div class="option"><input type="radio" name="q14" id="q14d"><label for="q14d"> D. They have a beautiful and well-decorated stall.</label></div>
+          <div class="option"><input type="radio" name="q14" id="q14a" value="A" onchange="saveAnswer('q14', this.value)"><label for="q14a"> A. They offer cooking tips and recipes.</label></div>
+          <div class="option"><input type="radio" name="q14" id="q14b" value="B" onchange="saveAnswer('q14', this.value)"><label for="q14b"> B. They offer the lowest prices at the market.</label></div>
+          <div class="option"><input type="radio" name="q14" id="q14c" value="C" onchange="saveAnswer('q14', this.value)"><label for="q14c"> C. They provide friendly service and excellent products.</label></div>
+          <div class="option"><input type="radio" name="q14" id="q14d" value="D" onchange="saveAnswer('q14', this.value)"><label for="q14d"> D. They have a beautiful and well-decorated stall.</label></div>
         </div>
         
         <div class="question-number">15. Why do customers go to the bakery stall early?</div>
         <div class="options">
-          <div class="option"><input type="radio" name="q15" id="q15a"><label for="q15a"> A. To get the free samples given in mornings</label></div>
-          <div class="option"><input type="radio" name="q15" id="q15b"><label for="q15b"> B. To get freshly baked bread and pastries before they are gone</label></div>
-          <div class="option"><input type="radio" name="q15" id="q15c"><label for="q15c"> C. To meet the famous baker</label></div>
-          <div class="option"><input type="radio" name="q15" id="q15d"><label for="q15d"> D. To take advantage of early morning discounts</label></div>
+          <div class="option"><input type="radio" name="q15" id="q15a" value="A" onchange="saveAnswer('q15', this.value)"><label for="q15a"> A. To get the free samples given in mornings</label></div>
+          <div class="option"><input type="radio" name="q15" id="q15b" value="B" onchange="saveAnswer('q15', this.value)"><label for="q15b"> B. To get freshly baked bread and pastries before they are gone</label></div>
+          <div class="option"><input type="radio" name="q15" id="q15c" value="C" onchange="saveAnswer('q15', this.value)"><label for="q15c"> C. To meet the famous baker</label></div>
+          <div class="option"><input type="radio" name="q15" id="q15d" value="D" onchange="saveAnswer('q15', this.value)"><label for="q15d"> D. To take advantage of early morning discounts</label></div>
         </div>
       </div>
     </div>
@@ -760,7 +828,7 @@
       <h2>Read an Academic Passage (16-20)</h2>
       
       <div class="question-item">
-        <div class="question-number">Questions 16-20</div>
+        <div class="question-number">📚 Questions 16-20</div>
         <div class="passage">
           <h3>The Mirror Test</h3>
           <p>Very young children cannot recognize themselves in a mirror; they usually achieve this milestone around 18 months of age. The ability to recognize oneself in the mirror is considered to be a key component of self-awareness and consciousness for humans. But what about animals?</p>
@@ -770,42 +838,42 @@
         
         <div class="question-number">16. What is the passage mainly about?</div>
         <div class="options">
-          <div class="option"><input type="radio" name="q16" id="q16a"><label for="q16a"> A. Stages of early childhood development</label></div>
-          <div class="option"><input type="radio" name="q16" id="q16b"><label for="q16b"> B. Research on animal cognition</label></div>
-          <div class="option"><input type="radio" name="q16" id="q16c"><label for="q16c"> C. Differences between apes, elephants, and dolphins</label></div>
-          <div class="option"><input type="radio" name="q16" id="q16d"><label for="q16d"> D. Recent experiments on fish</label></div>
+          <div class="option"><input type="radio" name="q16" id="q16a" value="A" onchange="saveAnswer('q16', this.value)"><label for="q16a"> A. Stages of early childhood development</label></div>
+          <div class="option"><input type="radio" name="q16" id="q16b" value="B" onchange="saveAnswer('q16', this.value)"><label for="q16b"> B. Research on animal cognition</label></div>
+          <div class="option"><input type="radio" name="q16" id="q16c" value="C" onchange="saveAnswer('q16', this.value)"><label for="q16c"> C. Differences between apes, elephants, and dolphins</label></div>
+          <div class="option"><input type="radio" name="q16" id="q16d" value="D" onchange="saveAnswer('q16', this.value)"><label for="q16d"> D. Recent experiments on fish</label></div>
         </div>
         
         <div class="question-number">17. The word "milestone" in the first sentence is closest in meaning to</div>
         <div class="options">
-          <div class="option"><input type="radio" name="q17" id="q17a"><label for="q17a"> A. accomplishment</label></div>
-          <div class="option"><input type="radio" name="q17" id="q17b"><label for="q17b"> B. distance</label></div>
-          <div class="option"><input type="radio" name="q17" id="q17c"><label for="q17c"> C. weight</label></div>
-          <div class="option"><input type="radio" name="q17" id="q17d"><label for="q17d"> D. discovery</label></div>
+          <div class="option"><input type="radio" name="q17" id="q17a" value="A" onchange="saveAnswer('q17', this.value)"><label for="q17a"> A. accomplishment</label></div>
+          <div class="option"><input type="radio" name="q17" id="q17b" value="B" onchange="saveAnswer('q17', this.value)"><label for="q17b"> B. distance</label></div>
+          <div class="option"><input type="radio" name="q17" id="q17c" value="C" onchange="saveAnswer('q17', this.value)"><label for="q17c"> C. weight</label></div>
+          <div class="option"><input type="radio" name="q17" id="q17d" value="D" onchange="saveAnswer('q17', this.value)"><label for="q17d"> D. discovery</label></div>
         </div>
         
         <div class="question-number">18. Why did scientists put colored marks on animals' bodies?</div>
         <div class="options">
-          <div class="option"><input type="radio" name="q18" id="q18a"><label for="q18a"> A. It made it possible to track the animals' movements.</label></div>
-          <div class="option"><input type="radio" name="q18" id="q18b"><label for="q18b"> B. It helped them determine whether the animals recognized themselves.</label></div>
-          <div class="option"><input type="radio" name="q18" id="q18c"><label for="q18c"> C. It made it easier to tell the animals apart.</label></div>
-          <div class="option"><input type="radio" name="q18" id="q18d"><label for="q18d"> D. It showed whether some animals can detect color differences.</label></div>
+          <div class="option"><input type="radio" name="q18" id="q18a" value="A" onchange="saveAnswer('q18', this.value)"><label for="q18a"> A. It made it possible to track the animals' movements.</label></div>
+          <div class="option"><input type="radio" name="q18" id="q18b" value="B" onchange="saveAnswer('q18', this.value)"><label for="q18b"> B. It helped them determine whether the animals recognized themselves.</label></div>
+          <div class="option"><input type="radio" name="q18" id="q18c" value="C" onchange="saveAnswer('q18', this.value)"><label for="q18c"> C. It made it easier to tell the animals apart.</label></div>
+          <div class="option"><input type="radio" name="q18" id="q18d" value="D" onchange="saveAnswer('q18', this.value)"><label for="q18d"> D. It showed whether some animals can detect color differences.</label></div>
         </div>
         
         <div class="question-number">19. According to the passage, all of the following are true about elephants EXCEPT:</div>
         <div class="options">
-          <div class="option"><input type="radio" name="q19" id="q19a"><label for="q19a"> A. They can recognize themselves in mirrors.</label></div>
-          <div class="option"><input type="radio" name="q19" id="q19b"><label for="q19b"> B. They are highly intelligent animals.</label></div>
-          <div class="option"><input type="radio" name="q19" id="q19c"><label for="q19c"> C. They possess qualities in common with apes.</label></div>
-          <div class="option"><input type="radio" name="q19" id="q19d"><label for="q19d"> D. They understand certain signs from other animals.</label></div>
+          <div class="option"><input type="radio" name="q19" id="q19a" value="A" onchange="saveAnswer('q19', this.value)"><label for="q19a"> A. They can recognize themselves in mirrors.</label></div>
+          <div class="option"><input type="radio" name="q19" id="q19b" value="B" onchange="saveAnswer('q19', this.value)"><label for="q19b"> B. They are highly intelligent animals.</label></div>
+          <div class="option"><input type="radio" name="q19" id="q19c" value="C" onchange="saveAnswer('q19', this.value)"><label for="q19c"> C. They possess qualities in common with apes.</label></div>
+          <div class="option"><input type="radio" name="q19" id="q19d" value="D" onchange="saveAnswer('q19', this.value)"><label for="q19d"> D. They understand certain signs from other animals.</label></div>
         </div>
         
         <div class="question-number">20. Why does the author mention cleaner fish?</div>
         <div class="options">
-          <div class="option"><input type="radio" name="q20" id="q20a"><label for="q20a"> A. To suggest that a wide range of animals may possess self-awareness</label></div>
-          <div class="option"><input type="radio" name="q20" id="q20b"><label for="q20b"> B. To imply that ocean animals are highly intelligent</label></div>
-          <div class="option"><input type="radio" name="q20" id="q20c"><label for="q20c"> C. To demonstrate a flaw in a recent experiment</label></div>
-          <div class="option"><input type="radio" name="q20" id="q20d"><label for="q20d"> D. To provide an example of an animal that does not recognize itself</label></div>
+          <div class="option"><input type="radio" name="q20" id="q20a" value="A" onchange="saveAnswer('q20', this.value)"><label for="q20a"> A. To suggest that a wide range of animals may possess self-awareness</label></div>
+          <div class="option"><input type="radio" name="q20" id="q20b" value="B" onchange="saveAnswer('q20', this.value)"><label for="q20b"> B. To imply that ocean animals are highly intelligent</label></div>
+          <div class="option"><input type="radio" name="q20" id="q20c" value="C" onchange="saveAnswer('q20', this.value)"><label for="q20c"> C. To demonstrate a flaw in a recent experiment</label></div>
+          <div class="option"><input type="radio" name="q20" id="q20d" value="D" onchange="saveAnswer('q20', this.value)"><label for="q20d"> D. To provide an example of an animal that does not recognize itself</label></div>
         </div>
       </div>
     </div>
@@ -833,67 +901,66 @@
     </div>
   </div>
 
-  <!-- Module 2 题目 - 修复版 -->
+  <!-- Module 2 题目 -->
   <div id="module2Page">
     <h1>📖 阅读 Module 2</h1>
     
-    <!-- 第1-10题：Complete the Words - 修复为每个字母一个输入框 -->
+    <!-- 第1-10题：Complete the Words -->
     <div class="section">
       <h2>Complete the Words (1-10)</h2>
-      <p class="task-description">Fill in the missing letters in the paragraph.</p>
+      <div class="task-description">Fill in the missing letters in the paragraph.</div>
       
       <div class="question-item">
-        <div class="question-number">Questions 1-10</div>
+        <div class="question-number">🔤 Questions 1-10</div>
         <div class="passage">
           <p>The human brain is a complex organ responsible for controlling all bodily functions and enabling thought, emotion, and memory.</p>
           <div class="fill-blank-container">
             <span class="fill-blank-text">It i</span>
-            <input type="text" class="fill-blank-input" maxlength="1" placeholder="_">
+            <input type="text" class="fill-blank-input" maxlength="1" placeholder="_" onchange="saveAnswer('reading2_1', this.value)">
             <span class="fill-blank-text">divided in</span>
-            <input type="text" class="fill-blank-input" maxlength="1" placeholder="_">
+            <input type="text" class="fill-blank-input" maxlength="1" placeholder="_" onchange="saveAnswer('reading2_2', this.value)">
             <span class="fill-blank-text">several reg</span>
-            <input type="text" class="fill-blank-input" maxlength="1" placeholder="_">
-            <input type="text" class="fill-blank-input" maxlength="1" placeholder="_">
-            <input type="text" class="fill-blank-input" maxlength="1" placeholder="_">
+            <input type="text" class="fill-blank-input" maxlength="1" placeholder="_" onchange="saveAnswer('reading2_3', this.value)">
+            <input type="text" class="fill-blank-input" maxlength="1" placeholder="_" onchange="saveAnswer('reading2_4', this.value)">
+            <input type="text" class="fill-blank-input" maxlength="1" placeholder="_" onchange="saveAnswer('reading2_5', this.value)">
             <span class="fill-blank-text">, each wi</span>
-            <input type="text" class="fill-blank-input" maxlength="1" placeholder="_">
-            <input type="text" class="fill-blank-input" maxlength="1" placeholder="_">
+            <input type="text" class="fill-blank-input" maxlength="1" placeholder="_" onchange="saveAnswer('reading2_6', this.value)">
+            <input type="text" class="fill-blank-input" maxlength="1" placeholder="_" onchange="saveAnswer('reading2_7', this.value)">
             <span class="fill-blank-text">specific ro</span>
-            <input type="text" class="fill-blank-input" maxlength="1" placeholder="_">
-            <input type="text" class="fill-blank-input" maxlength="1" placeholder="_">
-            <input type="text" class="fill-blank-input" maxlength="1" placeholder="_">
+            <input type="text" class="fill-blank-input" maxlength="1" placeholder="_" onchange="saveAnswer('reading2_8', this.value)">
+            <input type="text" class="fill-blank-input" maxlength="1" placeholder="_" onchange="saveAnswer('reading2_9', this.value)">
+            <input type="text" class="fill-blank-input" maxlength="1" placeholder="_" onchange="saveAnswer('reading2_10', this.value)">
             <span class="fill-blank-text">.</span>
           </div>
           <div class="fill-blank-container">
             <span class="fill-blank-text">The cerebrum, i</span>
-            <input type="text" class="fill-blank-input" maxlength="1" placeholder="_">
+            <input type="text" class="fill-blank-input" maxlength="1" placeholder="_" onchange="saveAnswer('reading2_11', this.value)">
             <span class="fill-blank-text">largest pa</span>
-            <input type="text" class="fill-blank-input" maxlength="1" placeholder="_">
-            <input type="text" class="fill-blank-input" maxlength="1" placeholder="_">
+            <input type="text" class="fill-blank-input" maxlength="1" placeholder="_" onchange="saveAnswer('reading2_12', this.value)">
+            <input type="text" class="fill-blank-input" maxlength="1" placeholder="_" onchange="saveAnswer('reading2_13', this.value)">
             <span class="fill-blank-text">, is invo</span>
-            <input type="text" class="fill-blank-input" maxlength="1" placeholder="_">
-            <input type="text" class="fill-blank-input" maxlength="1" placeholder="_">
-            <input type="text" class="fill-blank-input" maxlength="1" placeholder="_">
+            <input type="text" class="fill-blank-input" maxlength="1" placeholder="_" onchange="saveAnswer('reading2_14', this.value)">
+            <input type="text" class="fill-blank-input" maxlength="1" placeholder="_" onchange="saveAnswer('reading2_15', this.value)">
+            <input type="text" class="fill-blank-input" maxlength="1" placeholder="_" onchange="saveAnswer('reading2_16', this.value)">
             <span class="fill-blank-text">in cogn</span>
-            <input type="text" class="fill-blank-input" maxlength="1" placeholder="_">
-            <input type="text" class="fill-blank-input" maxlength="1" placeholder="_">
-            <input type="text" class="fill-blank-input" maxlength="1" placeholder="_">
-            <input type="text" class="fill-blank-input" maxlength="1" placeholder="_">
-            <input type="text" class="fill-blank-input" maxlength="1" placeholder="_">
-            <input type="text" class="fill-blank-input" maxlength="1" placeholder="_">
-            <input type="text" class="fill-blank-input" maxlength="1" placeholder="_">
-            <input type="text" class="fill-blank-input" maxlength="1" placeholder="_">
+            <input type="text" class="fill-blank-input" maxlength="1" placeholder="_" onchange="saveAnswer('reading2_17', this.value)">
+            <input type="text" class="fill-blank-input" maxlength="1" placeholder="_" onchange="saveAnswer('reading2_18', this.value)">
+            <input type="text" class="fill-blank-input" maxlength="1" placeholder="_" onchange="saveAnswer('reading2_19', this.value)">
+            <input type="text" class="fill-blank-input" maxlength="1" placeholder="_" onchange="saveAnswer('reading2_20', this.value)">
+            <input type="text" class="fill-blank-input" maxlength="1" placeholder="_" onchange="saveAnswer('reading2_21', this.value)">
+            <input type="text" class="fill-blank-input" maxlength="1" placeholder="_" onchange="saveAnswer('reading2_22', this.value)">
+            <input type="text" class="fill-blank-input" maxlength="1" placeholder="_" onchange="saveAnswer('reading2_23', this.value)">
+            <input type="text" class="fill-blank-input" maxlength="1" placeholder="_" onchange="saveAnswer('reading2_24', this.value)">
             <span class="fill-blank-text">functions su</span>
-            <input type="text" class="fill-blank-input" maxlength="1" placeholder="_">
-            <input type="text" class="fill-blank-input" maxlength="1" placeholder="_">
+            <input type="text" class="fill-blank-input" maxlength="1" placeholder="_" onchange="saveAnswer('reading2_25', this.value)">
+            <input type="text" class="fill-blank-input" maxlength="1" placeholder="_" onchange="saveAnswer('reading2_26', this.value)">
             <span class="fill-blank-text">as reasoning, planning, and language.</span>
           </div>
-          <p>The cerebellum coordinates movement and balance, while the brainstem controls vital bodily functions like breathing and heart rate. Together, they enable the brain to perform its various tasks.</p>
         </div>
       </div>
     </div>
 
-    <!-- 第11-12题：Read an email - 修复选择题 -->
+    <!-- 第11-12题：Read an email -->
     <div class="section">
       <h2>Read an email (11-12)</h2>
       
@@ -911,18 +978,18 @@
         
         <div class="question-number">11. When is the date of the art workshop?</div>
         <div class="options">
-          <div class="option"><input type="radio" name="m2q11" id="m2q11a"><label for="m2q11a"> A. September 10th</label></div>
-          <div class="option"><input type="radio" name="m2q11" id="m2q11b"><label for="m2q11b"> B. September 12th</label></div>
-          <div class="option"><input type="radio" name="m2q11" id="m2q11c"><label for="m2q11c"> C. September 20th</label></div>
-          <div class="option"><input type="radio" name="m2q11" id="m2q11d"><label for="m2q11d"> D. September 30th</label></div>
+          <div class="option"><input type="radio" name="m2q11" id="m2q11a" value="A" onchange="saveAnswer('m2q11', this.value)"><label for="m2q11a"> A. September 10th</label></div>
+          <div class="option"><input type="radio" name="m2q11" id="m2q11b" value="B" onchange="saveAnswer('m2q11', this.value)"><label for="m2q11b"> B. September 12th</label></div>
+          <div class="option"><input type="radio" name="m2q11" id="m2q11c" value="C" onchange="saveAnswer('m2q11', this.value)"><label for="m2q11c"> C. September 20th</label></div>
+          <div class="option"><input type="radio" name="m2q11" id="m2q11d" value="D" onchange="saveAnswer('m2q11', this.value)"><label for="m2q11d"> D. September 30th</label></div>
         </div>
         
         <div class="question-number">12. What should Ms. Edwards bring to the workshop?</div>
         <div class="options">
-          <div class="option"><input type="radio" name="m2q12" id="m2q12a"><label for="m2q12a"> A. A payment method</label></div>
-          <div class="option"><input type="radio" name="m2q12" id="m2q12b"><label for="m2q12b"> B. Extra paint</label></div>
-          <div class="option"><input type="radio" name="m2q12" id="m2q12c"><label for="m2q12c"> C. A protective garment</label></div>
-          <div class="option"><input type="radio" name="m2q12" id="m2q12d"><label for="m2q12d"> D. Proof of reservation</label></div>
+          <div class="option"><input type="radio" name="m2q12" id="m2q12a" value="A" onchange="saveAnswer('m2q12', this.value)"><label for="m2q12a"> A. A payment method</label></div>
+          <div class="option"><input type="radio" name="m2q12" id="m2q12b" value="B" onchange="saveAnswer('m2q12', this.value)"><label for="m2q12b"> B. Extra paint</label></div>
+          <div class="option"><input type="radio" name="m2q12" id="m2q12c" value="C" onchange="saveAnswer('m2q12', this.value)"><label for="m2q12c"> C. A protective garment</label></div>
+          <div class="option"><input type="radio" name="m2q12" id="m2q12d" value="D" onchange="saveAnswer('m2q12', this.value)"><label for="m2q12d"> D. Proof of reservation</label></div>
         </div>
       </div>
     </div>
@@ -947,26 +1014,26 @@
         
         <div class="question-number">13. What is the main purpose of the email?</div>
         <div class="options">
-          <div class="option"><input type="radio" name="m2q13" id="m2q13a"><label for="m2q13a"> A. To attract customers to a new fitness center</label></div>
-          <div class="option"><input type="radio" name="m2q13" id="m2q13b"><label for="m2q13b"> B. To provide Ms. Nguyen with an opportunity to provide expert personal training</label></div>
-          <div class="option"><input type="radio" name="m2q13" id="m2q13c"><label for="m2q13c"> C. To celebrate Ms. Nguyen's achievements in wellness</label></div>
-          <div class="option"><input type="radio" name="m2q13" id="m2q13d"><label for="m2q13d"> D. To announce a discount available to fitness-center members</label></div>
+          <div class="option"><input type="radio" name="m2q13" id="m2q13a" value="A" onchange="saveAnswer('m2q13', this.value)"><label for="m2q13a"> A. To attract customers to a new fitness center</label></div>
+          <div class="option"><input type="radio" name="m2q13" id="m2q13b" value="B" onchange="saveAnswer('m2q13', this.value)"><label for="m2q13b"> B. To provide Ms. Nguyen with an opportunity to provide expert personal training</label></div>
+          <div class="option"><input type="radio" name="m2q13" id="m2q13c" value="C" onchange="saveAnswer('m2q13', this.value)"><label for="m2q13c"> C. To celebrate Ms. Nguyen's achievements in wellness</label></div>
+          <div class="option"><input type="radio" name="m2q13" id="m2q13d" value="D" onchange="saveAnswer('m2q13', this.value)"><label for="m2q13d"> D. To announce a discount available to fitness-center members</label></div>
         </div>
         
         <div class="question-number">14. What can be inferred about Ms. Nguyen's relationship with the fitness center?</div>
         <div class="options">
-          <div class="option"><input type="radio" name="m2q14" id="m2q14a"><label for="m2q14a"> A. She helps the fitness center to organize activities.</label></div>
-          <div class="option"><input type="radio" name="m2q14" id="m2q14b"><label for="m2q14b"> B. She has already explored the new facility.</label></div>
-          <div class="option"><input type="radio" name="m2q14" id="m2q14c"><label for="m2q14c"> C. She is a member at one of the fitness center's other locations.</label></div>
-          <div class="option"><input type="radio" name="m2q14" id="m2q14d"><label for="m2q14d"> D. She is new to using fitness centers and exercise equipment.</label></div>
+          <div class="option"><input type="radio" name="m2q14" id="m2q14a" value="A" onchange="saveAnswer('m2q14', this.value)"><label for="m2q14a"> A. She helps the fitness center to organize activities.</label></div>
+          <div class="option"><input type="radio" name="m2q14" id="m2q14b" value="B" onchange="saveAnswer('m2q14', this.value)"><label for="m2q14b"> B. She has already explored the new facility.</label></div>
+          <div class="option"><input type="radio" name="m2q14" id="m2q14c" value="C" onchange="saveAnswer('m2q14', this.value)"><label for="m2q14c"> C. She is a member at one of the fitness center's other locations.</label></div>
+          <div class="option"><input type="radio" name="m2q14" id="m2q14d" value="D" onchange="saveAnswer('m2q14', this.value)"><label for="m2q14d"> D. She is new to using fitness centers and exercise equipment.</label></div>
         </div>
         
         <div class="question-number">15. The new fitness center is intended for use by which of the following groups of people?</div>
         <div class="options">
-          <div class="option"><input type="radio" name="m2q15" id="m2q15a"><label for="m2q15a"> A. Expert personal trainers</label></div>
-          <div class="option"><input type="radio" name="m2q15" id="m2q15b"><label for="m2q15b"> B. Top-tier athletes</label></div>
-          <div class="option"><input type="radio" name="m2q15" id="m2q15c"><label for="m2q15c"> C. Existing fitness-center members</label></div>
-          <div class="option"><input type="radio" name="m2q15" id="m2q15d"><label for="m2q15d"> D. Community members of all fitness levels</label></div>
+          <div class="option"><input type="radio" name="m2q15" id="m2q15a" value="A" onchange="saveAnswer('m2q15', this.value)"><label for="m2q15a"> A. Expert personal trainers</label></div>
+          <div class="option"><input type="radio" name="m2q15" id="m2q15b" value="B" onchange="saveAnswer('m2q15', this.value)"><label for="m2q15b"> B. Top-tier athletes</label></div>
+          <div class="option"><input type="radio" name="m2q15" id="m2q15c" value="C" onchange="saveAnswer('m2q15', this.value)"><label for="m2q15c"> C. Existing fitness-center members</label></div>
+          <div class="option"><input type="radio" name="m2q15" id="m2q15d" value="D" onchange="saveAnswer('m2q15', this.value)"><label for="m2q15d"> D. Community members of all fitness levels</label></div>
         </div>
       </div>
     </div>
@@ -985,42 +1052,42 @@
         
         <div class="question-number">16. Which of the following best states a main idea of the passage?</div>
         <div class="options">
-          <div class="option"><input type="radio" name="m2q16" id="m2q16a"><label for="m2q16a"> A. Effective marketing strategies focus on increasing product options.</label></div>
-          <div class="option"><input type="radio" name="m2q16" id="m2q16b"><label for="m2q16b"> B. Modern consumer culture is driven by a demand for fewer products.</label></div>
-          <div class="option"><input type="radio" name="m2q16" id="m2q16c"><label for="m2q16c"> C. Individualism enhances consumer contentment.</label></div>
-          <div class="option"><input type="radio" name="m2q16" id="m2q16d"><label for="m2q16d"> D. Limiting consumer choices can lead to higher satisfaction.</label></div>
+          <div class="option"><input type="radio" name="m2q16" id="m2q16a" value="A" onchange="saveAnswer('m2q16', this.value)"><label for="m2q16a"> A. Effective marketing strategies focus on increasing product options.</label></div>
+          <div class="option"><input type="radio" name="m2q16" id="m2q16b" value="B" onchange="saveAnswer('m2q16', this.value)"><label for="m2q16b"> B. Modern consumer culture is driven by a demand for fewer products.</label></div>
+          <div class="option"><input type="radio" name="m2q16" id="m2q16c" value="C" onchange="saveAnswer('m2q16', this.value)"><label for="m2q16c"> C. Individualism enhances consumer contentment.</label></div>
+          <div class="option"><input type="radio" name="m2q16" id="m2q16d" value="D" onchange="saveAnswer('m2q16', this.value)"><label for="m2q16d"> D. Limiting consumer choices can lead to higher satisfaction.</label></div>
         </div>
         
         <div class="question-number">17. What is one effect of decision fatigue as mentioned in the passage?</div>
         <div class="options">
-          <div class="option"><input type="radio" name="m2q17" id="m2q17a"><label for="m2q17a"> A. Desire to make the same choices as other consumers</label></div>
-          <div class="option"><input type="radio" name="m2q17" id="m2q17b"><label for="m2q17b"> B. Anxiety about making the wrong choice</label></div>
-          <div class="option"><input type="radio" name="m2q17" id="m2q17c"><label for="m2q17c"> C. Preference for consumer cultures</label></div>
-          <div class="option"><input type="radio" name="m2q17" id="m2q17d"><label for="m2q17d"> D. Enhanced freedom to choose</label></div>
+          <div class="option"><input type="radio" name="m2q17" id="m2q17a" value="A" onchange="saveAnswer('m2q17', this.value)"><label for="m2q17a"> A. Desire to make the same choices as other consumers</label></div>
+          <div class="option"><input type="radio" name="m2q17" id="m2q17b" value="B" onchange="saveAnswer('m2q17', this.value)"><label for="m2q17b"> B. Anxiety about making the wrong choice</label></div>
+          <div class="option"><input type="radio" name="m2q17" id="m2q17c" value="C" onchange="saveAnswer('m2q17', this.value)"><label for="m2q17c"> C. Preference for consumer cultures</label></div>
+          <div class="option"><input type="radio" name="m2q17" id="m2q17d" value="D" onchange="saveAnswer('m2q17', this.value)"><label for="m2q17d"> D. Enhanced freedom to choose</label></div>
         </div>
         
         <div class="question-number">18. Why does the author mention Sheena lyengar's experiment?</div>
         <div class="options">
-          <div class="option"><input type="radio" name="m2q18" id="m2q18a"><label for="m2q18a"> A. To highlight the effectiveness of marketing strategies</label></div>
-          <div class="option"><input type="radio" name="m2q18" id="m2q18b"><label for="m2q18b"> B. To explain the methodology used in consumer psychology</label></div>
-          <div class="option"><input type="radio" name="m2q18" id="m2q18c"><label for="m2q18c"> C. To provide evidence supporting the paradox of choice</label></div>
-          <div class="option"><input type="radio" name="m2q18" id="m2q18d"><label for="m2q18d"> D. To criticize the abundance of products in modern markets</label></div>
+          <div class="option"><input type="radio" name="m2q18" id="m2q18a" value="A" onchange="saveAnswer('m2q18', this.value)"><label for="m2q18a"> A. To highlight the effectiveness of marketing strategies</label></div>
+          <div class="option"><input type="radio" name="m2q18" id="m2q18b" value="B" onchange="saveAnswer('m2q18', this.value)"><label for="m2q18b"> B. To explain the methodology used in consumer psychology</label></div>
+          <div class="option"><input type="radio" name="m2q18" id="m2q18c" value="C" onchange="saveAnswer('m2q18', this.value)"><label for="m2q18c"> C. To provide evidence supporting the paradox of choice</label></div>
+          <div class="option"><input type="radio" name="m2q18" id="m2q18d" value="D" onchange="saveAnswer('m2q18', this.value)"><label for="m2q18d"> D. To criticize the abundance of products in modern markets</label></div>
         </div>
         
         <div class="question-number">19. The word "curating" in the passage is closest in meaning to</div>
         <div class="options">
-          <div class="option"><input type="radio" name="m2q19" id="m2q19a"><label for="m2q19a"> A. eliminating</label></div>
-          <div class="option"><input type="radio" name="m2q19" id="m2q19b"><label for="m2q19b"> B. organizing</label></div>
-          <div class="option"><input type="radio" name="m2q19" id="m2q19c"><label for="m2q19c"> C. increasing</label></div>
-          <div class="option"><input type="radio" name="m2q19" id="m2q19d"><label for="m2q19d"> D. changing</label></div>
+          <div class="option"><input type="radio" name="m2q19" id="m2q19a" value="A" onchange="saveAnswer('m2q19', this.value)"><label for="m2q19a"> A. eliminating</label></div>
+          <div class="option"><input type="radio" name="m2q19" id="m2q19b" value="B" onchange="saveAnswer('m2q19', this.value)"><label for="m2q19b"> B. organizing</label></div>
+          <div class="option"><input type="radio" name="m2q19" id="m2q19c" value="C" onchange="saveAnswer('m2q19', this.value)"><label for="m2q19c"> C. increasing</label></div>
+          <div class="option"><input type="radio" name="m2q19" id="m2q19d" value="D" onchange="saveAnswer('m2q19', this.value)"><label for="m2q19d"> D. changing</label></div>
         </div>
         
         <div class="question-number">20. What can be inferred about consumers in collectivist cultures?</div>
         <div class="options">
-          <div class="option"><input type="radio" name="m2q20" id="m2q20a"><label for="m2q20a"> A. They tend to report lower levels of satisfaction.</label></div>
-          <div class="option"><input type="radio" name="m2q20" id="m2q20b"><label for="m2q20b"> B. They are more affected by the paradox of choice.</label></div>
-          <div class="option"><input type="radio" name="m2q20" id="m2q20c"><label for="m2q20c"> C. They generally have fewer choices available.</label></div>
-          <div class="option"><input type="radio" name="m2q20" id="m2q20d"><label for="m2q20d"> D. They prefer individual decision-making.</label></div>
+          <div class="option"><input type="radio" name="m2q20" id="m2q20a" value="A" onchange="saveAnswer('m2q20', this.value)"><label for="m2q20a"> A. They tend to report lower levels of satisfaction.</label></div>
+          <div class="option"><input type="radio" name="m2q20" id="m2q20b" value="B" onchange="saveAnswer('m2q20', this.value)"><label for="m2q20b"> B. They are more affected by the paradox of choice.</label></div>
+          <div class="option"><input type="radio" name="m2q20" id="m2q20c" value="C" onchange="saveAnswer('m2q20', this.value)"><label for="m2q20c"> C. They generally have fewer choices available.</label></div>
+          <div class="option"><input type="radio" name="m2q20" id="m2q20d" value="D" onchange="saveAnswer('m2q20', this.value)"><label for="m2q20d"> D. They prefer individual decision-making.</label></div>
         </div>
       </div>
     </div>
@@ -1054,7 +1121,6 @@
           <li><strong>教师邮箱：</strong>ulaan0827@gmail.com</li>
           <li><strong>接收邮箱：</strong>ulaan0827@gmail.com</li>
         </ul>
-        <p>学生提交的录音将自动发送至上述邮箱。</p>
         
         <h4>⏰ 考试规则</h4>
         <ul>
@@ -1081,36 +1147,16 @@
         <h5>2. 面试问答</h5>
         <ul>
           <li>学生回答开放式面试问题</li>
-          <li>问题涉及：
-            <ul>
-              <li>个人经历</li>
-              <li>观点表达</li>
-              <li>简单论述</li>
-            </ul>
-          </li>
+          <li>问题涉及：个人经历、观点表达、简单论述</li>
           <li>限时作答</li>
           <li>所有回答自动录音</li>
         </ul>
-        <p>⏱️ 两部分均在总考试时间内完成。</p>
         
         <h4>👨‍🎓 学生须知</h4>
         <ol>
           <li>使用 <strong>Google Chrome 浏览器</strong></li>
-          <li>考前检查：
-            <ul>
-              <li>麦克风权限已开启</li>
-              <li>网络连接稳定</li>
-            </ul>
-          </li>
-          <li>点击教师提供的考试链接</li>
-          <li>仔细阅读屏幕提示</li>
-          <li>请<strong>勿</strong>：
-            <ul>
-              <li>刷新页面</li>
-              <li>切换浏览器标签</li>
-              <li>打开其他应用</li>
-            </ul>
-          </li>
+          <li>考前检查麦克风权限</li>
+          <li>请勿刷新页面或切换标签</li>
         </ol>
         <p>⚠️ 屏幕切换将触发警告或自动交卷。</p>
       </div>
@@ -1118,61 +1164,63 @@
 
     <h1>TOEFL Speaking Test</h1>
 
-    <div class="question">
+    <div class="section">
       <h2>Part 1: Listen & Repeat</h2>
       <p>Listen to the sentence and repeat it.</p>
 
       <audio controls>
         <source src="audio/part1_sentence1.mp3.mp3" type="audio/mpeg">
       </audio>
+      <button class="record-btn" onclick="startRecording(event, 'speaking1')">🎤 开始录音</button>
 
       <audio controls>
         <source src="audio/part1_sentence2.mp3.mp3" type="audio/mpeg">
       </audio>
+      <button class="record-btn" onclick="startRecording(event, 'speaking2')">🎤 开始录音</button>
 
       <audio controls>
         <source src="audio/part1_sentence3.mp3.mp3" type="audio/mpeg">
       </audio>
+      <button class="record-btn" onclick="startRecording(event, 'speaking3')">🎤 开始录音</button>
 
       <audio controls>
         <source src="audio/part1_sentence4.mp3.mp3" type="audio/mpeg">
       </audio>
-
-      <button onclick="startRecording(event)">Start Recording</button>
+      <button class="record-btn" onclick="startRecording(event, 'speaking4')">🎤 开始录音</button>
     </div>
 
-    <div class="question">
+    <div class="section">
       <h2>Part 2: Interview Question</h2>
       <p>Describe a teacher who has influenced you. — Watch student responses:</p>
 
-      <div style="display: flex; flex-wrap: wrap; gap: 20px; margin-top: 20px;">
-        <div style="flex: 1 1 calc(50% - 20px); background: #f9f9f9; border-radius: 12px; padding: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.05);">
-          <video width="100%" height="180" controls style="border-radius: 8px;">
+      <div class="video-grid">
+        <div class="video-item">
+          <video width="100%" controls>
             <source src="q1-interview.mp4" type="video/mp4">
           </video>
           <p style="font-weight: bold; margin-top: 10px;">📌 Question 1</p>
         </div>
-        <div style="flex: 1 1 calc(50% - 20px); background: #f9f9f9; border-radius: 12px; padding: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.05);">
-          <video width="100%" height="180" controls style="border-radius: 8px;">
+        <div class="video-item">
+          <video width="100%" controls>
             <source src="q2-interview.mp4" type="video/mp4">
           </video>
           <p style="font-weight: bold; margin-top: 10px;">📌 Question 2</p>
         </div>
-        <div style="flex: 1 1 calc(50% - 20px); background: #f9f9f9; border-radius: 12px; padding: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.05);">
-          <video width="100%" height="180" controls style="border-radius: 8px;">
+        <div class="video-item">
+          <video width="100%" controls>
             <source src="q3-interview.mp4" type="video/mp4">
           </video>
           <p style="font-weight: bold; margin-top: 10px;">📌 Question 3</p>
         </div>
-        <div style="flex: 1 1 calc(50% - 20px); background: #f9f9f9; border-radius: 12px; padding: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.05);">
-          <video width="100%" height="180" controls style="border-radius: 8px;">
+        <div class="video-item">
+          <video width="100%" controls>
             <source src="q4-interview.mp4" type="video/mp4">
           </video>
           <p style="font-weight: bold; margin-top: 10px;">📌 Question 4</p>
         </div>
       </div>
 
-      <button onclick="startRecording(event)" style="margin-top: 20px;">Start Recording</button>
+      <button class="record-btn" onclick="startRecording(event, 'speaking_interview')" style="margin-top: 20px;">🎤 开始录音回答</button>
     </div>
 
     <div class="nav-buttons">
@@ -1223,65 +1271,65 @@
     <!-- Build a Sentence 1-10题 -->
     <div class="section">
       <h2>Build a Sentence (1-10)</h2>
-      <p class="task-description">Create a grammatical sentence using the given words.</p>
+      <div class="task-description">Create a grammatical sentence using the given words.</div>
       
       <div class="question-item">
         <div class="question-number">1. The tour guides / who showed us around / the old city / were fantastic.</div>
-        <textarea placeholder="Type your sentence here..."></textarea>
+        <textarea placeholder="Type your sentence here..." onchange="saveAnswer('writing1', this.value)"></textarea>
         <div class="word-count">0 words</div>
       </div>
       
       <div class="question-item">
         <div class="question-number">2. Do you know / if she / will be moving / to a different department?</div>
-        <textarea placeholder="Type your sentence here..."></textarea>
+        <textarea placeholder="Type your sentence here..." onchange="saveAnswer('writing2', this.value)"></textarea>
         <div class="word-count">0 words</div>
       </div>
       
       <div class="question-item">
         <div class="question-number">3. Can you tell me / whether the cabins / will be available?</div>
-        <textarea placeholder="Type your sentence here..."></textarea>
+        <textarea placeholder="Type your sentence here..." onchange="saveAnswer('writing3', this.value)"></textarea>
         <div class="word-count">0 words</div>
       </div>
       
       <div class="question-item">
         <div class="question-number">4. What time / does it start?</div>
-        <textarea placeholder="Type your sentence here..."></textarea>
+        <textarea placeholder="Type your sentence here..." onchange="saveAnswer('writing4', this.value)"></textarea>
         <div class="word-count">0 words</div>
       </div>
       
       <div class="question-item">
         <div class="question-number">5. Do you know / how much / the tickets will cost?</div>
-        <textarea placeholder="Type your sentence here..."></textarea>
+        <textarea placeholder="Type your sentence here..." onchange="saveAnswer('writing5', this.value)"></textarea>
         <div class="word-count">0 words</div>
       </div>
       
       <div class="question-item">
         <div class="question-number">6. I'm planning to go to the beach tomorrow. is / time of year / what / the water / this / like / temperature</div>
-        <textarea placeholder="Type your sentence here..."></textarea>
+        <textarea placeholder="Type your sentence here..." onchange="saveAnswer('writing6', this.value)"></textarea>
         <div class="word-count">0 words</div>
       </div>
       
       <div class="question-item">
         <div class="question-number">7. I need to buy groceries today. list / do / a / have / shopping / you</div>
-        <textarea placeholder="Type your sentence here..."></textarea>
+        <textarea placeholder="Type your sentence here..." onchange="saveAnswer('writing7', this.value)"></textarea>
         <div class="word-count">0 words</div>
       </div>
       
       <div class="question-item">
         <div class="question-number">8. I'll be taking a cooking class this weekend. learn / what / will / you / recipes</div>
-        <textarea placeholder="Type your sentence here..."></textarea>
+        <textarea placeholder="Type your sentence here..." onchange="saveAnswer('writing8', this.value)"></textarea>
         <div class="word-count">0 words</div>
       </div>
       
       <div class="question-item">
         <div class="question-number">9. What did Maria ask you about the book you're reading? She she / wanted / a copy / buy / to know / could / where</div>
-        <textarea placeholder="Type your sentence here..."></textarea>
+        <textarea placeholder="Type your sentence here..." onchange="saveAnswer('writing9', this.value)"></textarea>
         <div class="word-count">0 words</div>
       </div>
       
       <div class="question-item">
         <div class="question-number">10. How did you prepare for the exam? I used by / the professor / that / the study guide / was provided / it</div>
-        <textarea placeholder="Type your sentence here..."></textarea>
+        <textarea placeholder="Type your sentence here..." onchange="saveAnswer('writing10', this.value)"></textarea>
         <div class="word-count">0 words</div>
       </div>
     </div>
@@ -1289,7 +1337,7 @@
     <!-- Write an Email -->
     <div class="section">
       <h2>Write an Email (11)</h2>
-      <p class="task-description">You will have 7 minutes to write the email.</p>
+      <div class="task-description">You will have 7 minutes to write the email.</div>
       
       <div class="question-item">
         <div class="question-number">11. Poetry Magazine Submission</div>
@@ -1304,7 +1352,7 @@
         </div>
         <p><strong>To:</strong> editor@sunshinepoetrymagazine.com</p>
         <p><strong>Subject:</strong> Problem using submission form</p>
-        <textarea placeholder="Write your email here..." style="min-height: 200px;"></textarea>
+        <textarea placeholder="Write your email here..." style="min-height: 200px;" onchange="saveAnswer('writing11', this.value)"></textarea>
         <div class="word-count">0 words</div>
       </div>
     </div>
@@ -1312,32 +1360,31 @@
     <!-- Write for an Academic Discussion -->
     <div class="section">
       <h2>Write for an Academic Discussion (12)</h2>
-      <p class="task-description">You will have 10 minutes to write. An effective response will contain at least 100 words.</p>
+      <div class="task-description">You will have 10 minutes to write. An effective response will contain at least 100 words.</div>
       
       <div class="question-item">
         <div class="question-number">12. Volunteerism Discussion</div>
         <div class="passage">
           <p><strong>Professor:</strong> Volunteerism refers to the act of offering your time and service without financial compensation to benefit a community, organization, or cause. While many people volunteer mainly to help others, some institutions have mandatory volunteer programs. High schools are one example, where students may be required to complete a certain number of volunteer hours to graduate. What do you think? Should high school students be required to do volunteer work? Why or why not?</p>
           
-          <p><strong>Student 1 (Paul):</strong> Yes, I think high schools should require volunteer hours because it helps students build a sense of civic responsibility. Many teenagers don't naturally think about helping others, and this requirement can introduce them to the idea that their time and effort can make a real difference in the lives of others.</p>
+          <p><strong>Student 1 (Paul):</strong> Yes, I think high schools should require volunteer hours because it helps students build a sense of civic responsibility.</p>
           
-          <p><strong>Student 2 (Anna):</strong> I don't think volunteer hours should be required because many students already have limited free time. Some have part-time jobs or take care of younger siblings after school. Adding a mandatory volunteer requirement could create extra stress and make it harder for those students to balance their existing responsibilities.</p>
+          <p><strong>Student 2 (Anna):</strong> I don't think volunteer hours should be required because many students already have limited free time.</p>
         </div>
-        <textarea placeholder="Write your response here..." style="min-height: 200px;"></textarea>
+        <textarea placeholder="Write your response here..." style="min-height: 200px;" onchange="saveAnswer('writing12', this.value)"></textarea>
         <div class="word-count">0 words</div>
       </div>
     </div>
 
-    <div class="nav-buttons">
-      <div></div>
-      <button class="nav-btn" onclick="finishExam()">完成考试，提交答案</button>
+    <div style="text-align: center;">
+      <button class="submit-btn" onclick="generateReport()">📄 完成考试，生成报告</button>
     </div>
   </div>
 
   <div class="footer">
     <p>
       <a href="#" onclick="toggleRules(); return false;">📖 查看完整的考试规则和说明</a>
-      <span style="margin: 0 10px; color: #ccc;">|</span>
+      <span style="margin: 0 15px; color: #ccc;">|</span>
       <a href="#" onclick="window.scrollTo({top: 0, behavior: 'smooth'}); return false;">⬆ 返回顶部</a>
     </p>
   </div>
@@ -1348,8 +1395,65 @@
       status: 'waiting',
       switchCount: 0,
       totalSeconds: 7200, // 2小时
-      timerInterval: null
+      timerInterval: null,
+      answers: JSON.parse(localStorage.getItem('toefl_answers')) || {},
+      recordings: []
     };
+
+    // ========== 答案保存 ==========
+    function saveAnswer(questionId, value) {
+      examState.answers[questionId] = value;
+      localStorage.setItem('toefl_answers', JSON.stringify(examState.answers));
+    }
+
+    // ========== 加载保存的答案 ==========
+    function loadSavedAnswers() {
+      Object.keys(examState.answers).forEach(key => {
+        const elements = document.querySelectorAll(`[name="${key}"], #${key}, [data-question="${key}"] input`);
+        elements.forEach(el => {
+          if (el.type === 'radio' && el.value === examState.answers[key]) {
+            el.checked = true;
+          } else if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
+            el.value = examState.answers[key];
+          }
+        });
+      });
+    }
+
+    // ========== 生成报告 ==========
+    function generateReport() {
+      let report = `TOEFL 模考成绩报告\n`;
+      report += `生成时间：${new Date().toLocaleString()}\n`;
+      report += `=${'='.repeat(50)}\n\n`;
+      
+      report += `阅读部分答案：\n`;
+      Object.keys(examState.answers).forEach(key => {
+        if (key.startsWith('reading') || key.startsWith('q') || key.startsWith('m2q')) {
+          report += `${key}: ${examState.answers[key]}\n`;
+        }
+      });
+      
+      report += `\n写作部分答案：\n`;
+      Object.keys(examState.answers).forEach(key => {
+        if (key.startsWith('writing')) {
+          report += `${key}: ${examState.answers[key]}\n`;
+        }
+      });
+      
+      report += `\n口语录音：\n`;
+      examState.recordings.forEach((rec, index) => {
+        report += `录音 ${index + 1}: ${rec.url}\n`;
+      });
+      
+      const blob = new Blob([report], { type: 'text/plain' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `TOEFL_Report_${new Date().toISOString().slice(0,10)}.txt`;
+      a.click();
+      
+      alert('报告已生成！请查收下载的文件。');
+    }
 
     // ========== 页面导航 ==========
     function startExam() {
@@ -1358,6 +1462,7 @@
       examState.status = 'active';
       updateStatusBadge('reading', '📖 阅读部分');
       startTotalTimer();
+      loadSavedAnswers();
     }
 
     function showModule1Intro() {
@@ -1395,11 +1500,6 @@
     function showWriting() {
       hideAllPages();
       document.getElementById('writingPage').style.display = 'block';
-    }
-
-    function finishExam() {
-      alert('考试完成！感谢您的参与。');
-      // 这里可以添加提交答案的逻辑
     }
 
     function hideAllPages() {
@@ -1523,7 +1623,6 @@
       content.className = 'warning-content terminated';
       modal.classList.remove('hidden');
       
-      // 禁用所有按钮
       document.querySelectorAll('button').forEach(btn => {
         if (!btn.classList.contains('start-exam-btn')) {
           btn.disabled = true;
@@ -1531,31 +1630,28 @@
       });
     }
 
-    // ========== 口语部分的录音函数 ==========
+    // ========== 录音功能 ==========
     let mediaRecorder;
     let audioChunks = [];
     let recordingStream = null;
+    let currentQuestion = null;
 
-    async function startRecording(event) {
+    async function startRecording(event, questionId) {
       if (!event) event = window.event;
       if (examState.status !== 'active' && examState.status !== 'warning') {
         alert('考试未开始或已结束');
         return;
       }
       
+      currentQuestion = questionId;
+      
       try {
         if (!navigator.mediaDevices || !window.MediaRecorder) {
-          alert('❌ 您的浏览器不支持录音功能。请使用 Chrome、Firefox 或 Edge 最新版本。');
+          alert('❌ 您的浏览器不支持录音功能。');
           return;
         }
 
-        const stream = await navigator.mediaDevices.getUserMedia({ 
-          audio: {
-            echoCancellation: true,
-            noiseSuppression: true,
-            sampleRate: 16000
-          } 
-        });
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
         
         recordingStream = stream;
         mediaRecorder = new MediaRecorder(stream);
@@ -1571,14 +1667,20 @@
           const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
           const audioUrl = URL.createObjectURL(audioBlob);
           
+          examState.recordings.push({
+            question: questionId,
+            url: audioUrl,
+            timestamp: new Date().toISOString()
+          });
+          
           const audioPlayer = document.createElement('audio');
           audioPlayer.controls = true;
           audioPlayer.src = audioUrl;
           audioPlayer.style.width = '100%';
-          audioPlayer.style.marginTop = '10px';
+          audioPlayer.style.marginTop = '15px';
           
           const activeButton = document.activeElement;
-          if (activeButton && activeButton.tagName === 'BUTTON') {
+          if (activeButton && activeButton.parentNode) {
             activeButton.parentNode.insertBefore(audioPlayer, activeButton.nextSibling);
           }
           
@@ -1593,8 +1695,7 @@
         
         const currentBtn = event.target;
         currentBtn.textContent = '🔴 录音中...';
-        currentBtn.style.background = '#ff4444';
-        currentBtn.style.color = 'white';
+        currentBtn.classList.add('recording');
         currentBtn.disabled = true;
         
         const stopBtn = document.createElement('button');
@@ -1602,18 +1703,15 @@
         stopBtn.style.marginLeft = '10px';
         stopBtn.style.background = '#666';
         stopBtn.style.color = 'white';
+        stopBtn.style.border = 'none';
+        stopBtn.style.padding = '10px 20px';
+        stopBtn.style.borderRadius = '8px';
+        stopBtn.style.cursor = 'pointer';
         stopBtn.onclick = stopRecording;
         currentBtn.parentNode.insertBefore(stopBtn, currentBtn.nextSibling);
         
       } catch (err) {
-        console.error('录音启动失败:', err);
-        if (err.name === 'NotAllowedError') {
-          alert('❌ 麦克风权限被拒绝。请检查浏览器地址栏的权限设置。');
-        } else if (err.name === 'NotFoundError') {
-          alert('❌ 未检测到麦克风设备。请连接麦克风后重试。');
-        } else {
-          alert(`录音失败: ${err.message}`);
-        }
+        alert('录音失败: ' + err.message);
       }
     }
 
@@ -1621,11 +1719,10 @@
       if (mediaRecorder && mediaRecorder.state !== 'inactive') {
         mediaRecorder.stop();
         
-        const recordBtns = document.querySelectorAll('button[onclick="startRecording(event)"]');
+        const recordBtns = document.querySelectorAll('.record-btn');
         recordBtns.forEach(btn => {
-          btn.textContent = 'Start Recording';
-          btn.style.background = '';
-          btn.style.color = '';
+          btn.textContent = '🎤 开始录音';
+          btn.classList.remove('recording');
           btn.disabled = false;
         });
         
@@ -1652,13 +1749,14 @@
       }
     }
 
-    // 初始化
+    // ========== 初始化 ==========
     window.onload = function() {
       updateStatusBadge('waiting', '📋 阅读规则');
       updateTotalTimerDisplay();
+      loadSavedAnswers();
     };
 
-    // 页面卸载前提示
+    // ========== 页面卸载前提示 ==========
     window.addEventListener('beforeunload', function(e) {
       if (examState.status === 'active' || examState.status === 'warning') {
         e.preventDefault();
