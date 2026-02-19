@@ -25,18 +25,72 @@
       margin-top: 10px;
       width: 100%;
     }
+    
+    /* 新增样式：考试信息提示框 */
+    .exam-info {
+      background-color: #e8f4fd;
+      border-left: 4px solid #2196F3;
+      padding: 15px 20px;
+      margin-bottom: 30px;
+      border-radius: 0 8px 8px 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    
+    .exam-info p {
+      margin: 0;
+      color: #1976D2;
+      font-weight: 500;
+    }
+    
+    .exam-info a {
+      background-color: #2196F3;
+      color: white;
+      text-decoration: none;
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-size: 14px;
+      transition: background-color 0.3s;
+    }
+    
+    .exam-info a:hover {
+      background-color: #1976D2;
+    }
+    
+    .exam-info a:visited {
+      color: white;
+    }
+    
+    /* 新增样式：页脚 */
+    .footer {
+      margin-top: 40px;
+      padding-top: 20px;
+      border-top: 1px solid #eee;
+      text-align: center;
+      color: #666;
+    }
+    
+    .footer a {
+      color: #2196F3;
+      text-decoration: none;
+    }
+    
+    .footer a:hover {
+      text-decoration: underline;
+    }
   </style>
 </head>
-  
-<div style="margin-top: 40px; padding-top: 20px; border-top: 1px solid #eee; text-align: center; color: #666;">
-  <p>
-    <a href="README.md" style="color: #2196F3; text-decoration: none;">📖 查看考试规则和说明</a>
-    <span style="margin: 0 10px;">|</span>
-    <a href="#" style="color: #666; text-decoration: none;">⬆ 返回顶部</a>
-  </p>
-  <p style="font-size: 12px; margin-top: 10px;">© TOEFL Speaking Mock Test System</p>
-</div>
+
 <body>
+
+  <!-- 新增：顶部考试信息提示框 -->
+  <div class="exam-info">
+    <p>📋 请仔细阅读考试规则和说明</p>
+    <a href="README.md" target="_blank">查看考试说明 →</a>
+  </div>
 
   <h1>TOEFL Speaking Test</h1>
 
@@ -44,191 +98,204 @@
     <h2>Part 1: Listen & Repeat</h2>
     <p>Listen to the sentence and repeat it.</p>
 
-<audio controls>
-  <source src="audio/part1_sentence1.mp3.mp3" type="audio/mpeg">
-</audio>
+    <audio controls>
+      <source src="audio/part1_sentence1.mp3.mp3" type="audio/mpeg">
+    </audio>
 
-<audio controls>
-  <source src="audio/part1_sentence2.mp3.mp3" type="audio/mpeg">
-</audio>
+    <audio controls>
+      <source src="audio/part1_sentence2.mp3.mp3" type="audio/mpeg">
+    </audio>
 
-<audio controls>
-  <source src="audio/part1_sentence3.mp3.mp3" type="audio/mpeg">
-</audio>
+    <audio controls>
+      <source src="audio/part1_sentence3.mp3.mp3" type="audio/mpeg">
+    </audio>
 
-<audio controls>
-  <source src="audio/part1_sentence4.mp3.mp3" type="audio/mpeg">
-</audio>
+    <audio controls>
+      <source src="audio/part1_sentence4.mp3.mp3" type="audio/mpeg">
+    </audio>
 
     <button onclick="startRecording(event)">Start Recording</button>
   </div>
 
- <div class="question">
-  <h2>Part 2: Interview Question</h2>
-  <p>Describe a teacher who has influenced you. — Watch student responses:</p>
+  <div class="question">
+    <h2>Part 2: Interview Question</h2>
+    <p>Describe a teacher who has influenced you. — Watch student responses:</p>
 
-  <div style="display: flex; flex-wrap: wrap; gap: 20px; margin-top: 20px;">
-    <div style="flex: 1 1 calc(50% - 20px); background: #f9f9f9; border-radius: 12px; padding: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.05);">
-      <video width="100%" height="180" controls style="border-radius: 8px;">
-        <source src="q1-interview.mp4" type="video/mp4">
-      </video>
-      <p style="font-weight: bold; margin-top: 10px;">📌 Question 1</p>
+    <div style="display: flex; flex-wrap: wrap; gap: 20px; margin-top: 20px;">
+      <div style="flex: 1 1 calc(50% - 20px); background: #f9f9f9; border-radius: 12px; padding: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.05);">
+        <video width="100%" height="180" controls style="border-radius: 8px;">
+          <source src="q1-interview.mp4" type="video/mp4">
+        </video>
+        <p style="font-weight: bold; margin-top: 10px;">📌 Question 1</p>
+      </div>
+      <div style="flex: 1 1 calc(50% - 20px); background: #f9f9f9; border-radius: 12px; padding: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.05);">
+        <video width="100%" height="180" controls style="border-radius: 8px;">
+          <source src="q2-interview.mp4" type="video/mp4">
+        </video>
+        <p style="font-weight: bold; margin-top: 10px;">📌 Question 2</p>
+      </div>
+      <div style="flex: 1 1 calc(50% - 20px); background: #f9f9f9; border-radius: 12px; padding: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.05);">
+        <video width="100%" height="180" controls style="border-radius: 8px;">
+          <source src="q3-interview.mp4" type="video/mp4">
+        </video>
+        <p style="font-weight: bold; margin-top: 10px;">📌 Question 3</p>
+      </div>
+      <div style="flex: 1 1 calc(50% - 20px); background: #f9f9f9; border-radius: 12px; padding: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.05);">
+        <video width="100%" height="180" controls style="border-radius: 8px;">
+          <source src="q4-interview.mp4" type="video/mp4">
+        </video>
+        <p style="font-weight: bold; margin-top: 10px;">📌 Question 4</p>
+      </div>
     </div>
-    <div style="flex: 1 1 calc(50% - 20px); background: #f9f9f9; border-radius: 12px; padding: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.05);">
-      <video width="100%" height="180" controls style="border-radius: 8px;">
-        <source src="q2-interview.mp4" type="video/mp4">
-      </video>
-      <p style="font-weight: bold; margin-top: 10px;">📌 Question 2</p>
-    </div>
-    <div style="flex: 1 1 calc(50% - 20px); background: #f9f9f9; border-radius: 12px; padding: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.05);">
-      <video width="100%" height="180" controls style="border-radius: 8px;">
-        <source src="q3-interview.mp4" type="video/mp4">
-      </video>
-      <p style="font-weight: bold; margin-top: 10px;">📌 Question 3</p>
-    </div>
-    <div style="flex: 1 1 calc(50% - 20px); background: #f9f9f9; border-radius: 12px; padding: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.05);">
-      <video width="100%" height="180" controls style="border-radius: 8px;">
-        <source src="q4-interview.mp4" type="video/mp4">
-      </video>
-      <p style="font-weight: bold; margin-top: 10px;">📌 Question 4</p>
-    </div>
+
+    <button onclick="startRecording(event)" style="margin-top: 20px;">Start Recording</button>
+  </div>
+  
+  <!-- 新增：底部链接 -->
+  <div class="footer">
+    <p>
+      <a href="README.md" target="_blank">📖 查看完整的考试规则和说明</a>
+      <span style="margin: 0 10px; color: #ccc;">|</span>
+      <a href="#" onclick="window.scrollTo({top: 0, behavior: 'smooth'}); return false;">⬆ 返回顶部</a>
+    </p>
+    <p style="font-size: 12px; margin-top: 10px; color: #999;">
+      © TOEFL Speaking Mock Test System | 考试时间: 8-10分钟 | 请勿切换屏幕
+    </p>
   </div>
 
-  <button onclick="startRecording(event)" style="margin-top: 20px;">Start Recording</button>
-</div>
- <script>
-  // 全局变量
-  let mediaRecorder;
-  let audioChunks = [];
-  let recordingStream = null;
+  <script>
+    // 全局变量
+    let mediaRecorder;
+    let audioChunks = [];
+    let recordingStream = null;
 
-  // Part 1 & Part 2 共用的录音函数
-  async function startRecording(event) {
-    // ✅ 修复：确保 event 存在
-    if (!event) event = window.event;
-    
-    try {
-      // 1. 检查浏览器兼容性
-      if (!navigator.mediaDevices || !window.MediaRecorder) {
-        alert('❌ 您的浏览器不支持录音功能。请使用 Chrome、Firefox 或 Edge 最新版本。');
-        return;
-      }
-
-      // 2. 请求麦克风权限
-      const stream = await navigator.mediaDevices.getUserMedia({ 
-        audio: {
-          echoCancellation: true,
-          noiseSuppression: true,
-          sampleRate: 16000
-        } 
-      });
+    // Part 1 & Part 2 共用的录音函数
+    async function startRecording(event) {
+      // ✅ 修复：确保 event 存在
+      if (!event) event = window.event;
       
-      recordingStream = stream;
-      
-      // 3. 初始化 MediaRecorder
-      mediaRecorder = new MediaRecorder(stream);
-      audioChunks = [];
+      try {
+        // 1. 检查浏览器兼容性
+        if (!navigator.mediaDevices || !window.MediaRecorder) {
+          alert('❌ 您的浏览器不支持录音功能。请使用 Chrome、Firefox 或 Edge 最新版本。');
+          return;
+        }
 
-      // 4. 收集音频数据块
-      mediaRecorder.ondataavailable = (event) => {
-        if (event.data.size > 0) {
-          audioChunks.push(event.data);
-        }
-      };
-
-      // 5. 录音停止时的处理
-      mediaRecorder.onstop = () => {
-        // 生成音频文件
-        const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
-        const audioUrl = URL.createObjectURL(audioBlob);
+        // 2. 请求麦克风权限
+        const stream = await navigator.mediaDevices.getUserMedia({ 
+          audio: {
+            echoCancellation: true,
+            noiseSuppression: true,
+            sampleRate: 16000
+          } 
+        });
         
-        // 创建临时音频播放器用于回放
-        const audioPlayer = document.createElement('audio');
-        audioPlayer.controls = true;
-        audioPlayer.src = audioUrl;
-        audioPlayer.style.width = '100%';
-        audioPlayer.style.marginTop = '10px';
+        recordingStream = stream;
         
-        // 将播放器插入到当前点击的按钮后面
-        const activeButton = document.activeElement;
-        if (activeButton && activeButton.tagName === 'BUTTON') {
-          activeButton.parentNode.insertBefore(audioPlayer, activeButton.nextSibling);
-        }
-        
-        console.log('✅ 录音完成');
-        
-        // 释放麦克风资源
-        if (recordingStream) {
-          recordingStream.getTracks().forEach(track => track.stop());
-          recordingStream = null;
-        }
-        
-        // 清空数据块
+        // 3. 初始化 MediaRecorder
+        mediaRecorder = new MediaRecorder(stream);
         audioChunks = [];
-      };
 
-      // 6. 开始录音
-      mediaRecorder.start();
-      console.log('🎤 录音已开始');
-      
-      // 7. 改变按钮状态 - ✅ 现在 event.target 可用！
-      const currentBtn = event.target;
-      if (currentBtn) {
-        currentBtn.textContent = '🔴 录音中...';
-        currentBtn.style.background = '#ff4444';
-        currentBtn.style.color = 'white';
-        currentBtn.disabled = true;
+        // 4. 收集音频数据块
+        mediaRecorder.ondataavailable = (event) => {
+          if (event.data.size > 0) {
+            audioChunks.push(event.data);
+          }
+        };
+
+        // 5. 录音停止时的处理
+        mediaRecorder.onstop = () => {
+          // 生成音频文件
+          const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
+          const audioUrl = URL.createObjectURL(audioBlob);
+          
+          // 创建临时音频播放器用于回放
+          const audioPlayer = document.createElement('audio');
+          audioPlayer.controls = true;
+          audioPlayer.src = audioUrl;
+          audioPlayer.style.width = '100%';
+          audioPlayer.style.marginTop = '10px';
+          
+          // 将播放器插入到当前点击的按钮后面
+          const activeButton = document.activeElement;
+          if (activeButton && activeButton.tagName === 'BUTTON') {
+            activeButton.parentNode.insertBefore(audioPlayer, activeButton.nextSibling);
+          }
+          
+          console.log('✅ 录音完成');
+          
+          // 释放麦克风资源
+          if (recordingStream) {
+            recordingStream.getTracks().forEach(track => track.stop());
+            recordingStream = null;
+          }
+          
+          // 清空数据块
+          audioChunks = [];
+        };
+
+        // 6. 开始录音
+        mediaRecorder.start();
+        console.log('🎤 录音已开始');
         
-        // 添加停止按钮
-        const stopBtn = document.createElement('button');
-        stopBtn.textContent = '⏹️ 停止录音';
-        stopBtn.style.marginLeft = '10px';
-        stopBtn.style.background = '#666';
-        stopBtn.style.color = 'white';
-        stopBtn.onclick = stopRecording;
-        currentBtn.parentNode.insertBefore(stopBtn, currentBtn.nextSibling);
+        // 7. 改变按钮状态
+        const currentBtn = event.target;
+        if (currentBtn) {
+          currentBtn.textContent = '🔴 录音中...';
+          currentBtn.style.background = '#ff4444';
+          currentBtn.style.color = 'white';
+          currentBtn.disabled = true;
+          
+          // 添加停止按钮
+          const stopBtn = document.createElement('button');
+          stopBtn.textContent = '⏹️ 停止录音';
+          stopBtn.style.marginLeft = '10px';
+          stopBtn.style.background = '#666';
+          stopBtn.style.color = 'white';
+          stopBtn.onclick = stopRecording;
+          currentBtn.parentNode.insertBefore(stopBtn, currentBtn.nextSibling);
+        }
+        
+      } catch (err) {
+        console.error('录音启动失败:', err);
+        if (err.name === 'NotAllowedError') {
+          alert('❌ 麦克风权限被拒绝。请检查浏览器地址栏的权限设置。');
+        } else if (err.name === 'NotFoundError') {
+          alert('❌ 未检测到麦克风设备。请连接麦克风后重试。');
+        } else {
+          alert(`录音失败: ${err.message}`);
+        }
       }
-      
-    } catch (err) {
-      console.error('录音启动失败:', err);
-      if (err.name === 'NotAllowedError') {
-        alert('❌ 麦克风权限被拒绝。请检查浏览器地址栏的权限设置。');
-      } else if (err.name === 'NotFoundError') {
-        alert('❌ 未检测到麦克风设备。请连接麦克风后重试。');
-      } else {
-        alert(`录音失败: ${err.message}`);
+    }
+
+    // 停止录音函数
+    function stopRecording() {
+      if (mediaRecorder && mediaRecorder.state !== 'inactive') {
+        mediaRecorder.stop();
+        console.log('⏹️ 录音已停止');
+        
+        // 恢复按钮状态
+        const recordBtns = document.querySelectorAll('button[onclick="startRecording(event)"]');
+        recordBtns.forEach(btn => {
+          btn.textContent = 'Start Recording';
+          btn.style.background = '';
+          btn.style.color = '';
+          btn.disabled = false;
+        });
+        
+        // 移除停止按钮
+        const stopBtns = document.querySelectorAll('button[onclick="stopRecording()"]');
+        stopBtns.forEach(btn => btn.remove());
       }
     }
-  }
 
-  // 停止录音函数
-  function stopRecording() {
-    if (mediaRecorder && mediaRecorder.state !== 'inactive') {
-      mediaRecorder.stop();
-      console.log('⏹️ 录音已停止');
-      
-      // 恢复按钮状态
-      const recordBtns = document.querySelectorAll('button[onclick="startRecording(event)"]');
-      recordBtns.forEach(btn => {
-        btn.textContent = 'Start Recording';
-        btn.style.background = '';
-        btn.style.color = '';
-        btn.disabled = false;
-      });
-      
-      // 移除停止按钮
-      const stopBtns = document.querySelectorAll('button[onclick="stopRecording()"]');
-      stopBtns.forEach(btn => btn.remove());
-    }
-  }
-
-  // 页面卸载时释放资源
-  window.addEventListener('beforeunload', () => {
-    if (recordingStream) {
-      recordingStream.getTracks().forEach(track => track.stop());
-    }
-  });
-</script>
+    // 页面卸载时释放资源
+    window.addEventListener('beforeunload', () => {
+      if (recordingStream) {
+        recordingStream.getTracks().forEach(track => track.stop());
+      }
+    });
+  </script>
   
 </body>
 </html>
