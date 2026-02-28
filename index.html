@@ -2,9 +2,9 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>TOEFL Mock Exam - Full Test</title>
+  <title>TOEFL Mock Exam - 口语独立录音</title>
   <style>
-    /* 全局样式优化 */
+    /* 全局样式优化 (保持原风格，仅增补) */
     * {
       box-sizing: border-box;
       margin: 0;
@@ -360,33 +360,87 @@
       font-weight: 500;
     }
     
-    /* 录音按钮 */
+    /* ========== 录音按钮及计时器增强 ========== */
+    .record-control {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 15px;
+      margin: 20px 0 10px;
+    }
+    
     .record-btn {
       background: linear-gradient(135deg, #f44336 0%, #d32f2f 100%);
       color: white;
       border: none;
-      padding: 15px 30px;
+      padding: 12px 24px;
       border-radius: 50px;
-      font-size: 16px;
+      font-size: 15px;
       font-weight: 600;
       cursor: pointer;
       transition: all 0.3s;
       box-shadow: 0 5px 15px rgba(244, 67, 54, 0.3);
+      min-width: 140px;
     }
     
-    .record-btn:hover {
+    .record-btn:hover:not(:disabled) {
       transform: scale(1.05);
       box-shadow: 0 8px 20px rgba(244, 67, 54, 0.4);
     }
     
     .record-btn.recording {
       animation: pulse-red 1.5s infinite;
+      background: linear-gradient(135deg, #d32f2f 0%, #b71c1c 100%);
+    }
+    
+    .record-btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      box-shadow: none;
     }
     
     @keyframes pulse-red {
       0% { opacity: 1; }
       50% { opacity: 0.7; transform: scale(1.02); }
       100% { opacity: 1; }
+    }
+    
+    /* 独立倒计时显示器 */
+    .countdown-timer {
+      display: inline-block;
+      font-size: 24px;
+      font-weight: 700;
+      font-family: 'Courier New', monospace;
+      background: #f0f4fa;
+      padding: 8px 20px;
+      border-radius: 40px;
+      color: #1976D2;
+      border: 1px solid #bbdefb;
+      min-width: 100px;
+      text-align: center;
+    }
+    
+    .countdown-timer.warning {
+      color: #d32f2f;
+      background: #ffebee;
+      border-color: #ef9a9a;
+    }
+    
+    .stop-btn {
+      background: #607D8B;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 40px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: 0.2s;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    
+    .stop-btn:hover {
+      background: #455A64;
     }
     
     /* 音频播放器 */
@@ -400,27 +454,42 @@
     .video-grid {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
-      gap: 20px;
+      gap: 25px;
       margin-top: 20px;
     }
     
     .video-item {
       background: white;
-      border-radius: 20px;
-      padding: 15px;
-      box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+      border-radius: 24px;
+      padding: 20px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.05);
       transition: all 0.2s;
+      border: 1px solid #eceff1;
     }
     
     .video-item:hover {
       transform: translateY(-5px);
-      box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+      box-shadow: 0 15px 35px rgba(0,0,0,0.1);
     }
     
     .video-item video {
       width: 100%;
       height: auto;
-      border-radius: 12px;
+      border-radius: 16px;
+      background: #000;
+    }
+    
+    .video-item p {
+      font-weight: 600;
+      margin: 15px 0 10px;
+      color: #37474F;
+    }
+    
+    /* 录音区域分隔 */
+    .recording-area {
+      border-top: 2px dashed #cfd8dc;
+      padding-top: 15px;
+      margin-top: 10px;
     }
     
     /* 折叠面板 */
@@ -1171,22 +1240,43 @@
       <audio controls>
         <source src="audio/part1_sentence1.mp3.mp3" type="audio/mpeg">
       </audio>
-      <button class="record-btn" onclick="startRecording(event, 'speaking1')">🎤 开始录音</button>
+      <!-- 每个题目独立录音按钮 + 计时器容器 -->
+      <div class="recording-area" id="speaking1-area">
+        <div class="record-control">
+          <button class="record-btn" onclick="startRecordingWithTimer('speaking1', this)">🎤 开始录音</button>
+          <span class="countdown-timer" id="timer-speaking1">00:45</span>
+        </div>
+      </div>
 
       <audio controls>
         <source src="audio/part1_sentence2.mp3.mp3" type="audio/mpeg">
       </audio>
-      <button class="record-btn" onclick="startRecording(event, 'speaking2')">🎤 开始录音</button>
+      <div class="recording-area" id="speaking2-area">
+        <div class="record-control">
+          <button class="record-btn" onclick="startRecordingWithTimer('speaking2', this)">🎤 开始录音</button>
+          <span class="countdown-timer" id="timer-speaking2">00:45</span>
+        </div>
+      </div>
 
       <audio controls>
         <source src="audio/part1_sentence3.mp3.mp3" type="audio/mpeg">
       </audio>
-      <button class="record-btn" onclick="startRecording(event, 'speaking3')">🎤 开始录音</button>
+      <div class="recording-area" id="speaking3-area">
+        <div class="record-control">
+          <button class="record-btn" onclick="startRecordingWithTimer('speaking3', this)">🎤 开始录音</button>
+          <span class="countdown-timer" id="timer-speaking3">00:45</span>
+        </div>
+      </div>
 
       <audio controls>
         <source src="audio/part1_sentence4.mp3.mp3" type="audio/mpeg">
       </audio>
-      <button class="record-btn" onclick="startRecording(event, 'speaking4')">🎤 开始录音</button>
+      <div class="recording-area" id="speaking4-area">
+        <div class="record-control">
+          <button class="record-btn" onclick="startRecordingWithTimer('speaking4', this)">🎤 开始录音</button>
+          <span class="countdown-timer" id="timer-speaking4">00:45</span>
+        </div>
+      </div>
     </div>
 
     <div class="section">
@@ -1198,29 +1288,51 @@
           <video width="100%" controls>
             <source src="q1-interview.mp4" type="video/mp4">
           </video>
-          <p style="font-weight: bold; margin-top: 10px;">📌 Question 1</p>
+          <p>📌 Question 1</p>
+          <div class="recording-area" id="interview1-area">
+            <div class="record-control">
+              <button class="record-btn" onclick="startRecordingWithTimer('interview1', this)">🎤 开始录音回答</button>
+              <span class="countdown-timer" id="timer-interview1">00:45</span>
+            </div>
+          </div>
         </div>
         <div class="video-item">
           <video width="100%" controls>
             <source src="q2-interview.mp4" type="video/mp4">
           </video>
-          <p style="font-weight: bold; margin-top: 10px;">📌 Question 2</p>
+          <p>📌 Question 2</p>
+          <div class="recording-area" id="interview2-area">
+            <div class="record-control">
+              <button class="record-btn" onclick="startRecordingWithTimer('interview2', this)">🎤 开始录音回答</button>
+              <span class="countdown-timer" id="timer-interview2">00:45</span>
+            </div>
+          </div>
         </div>
         <div class="video-item">
           <video width="100%" controls>
             <source src="q3-interview.mp4" type="video/mp4">
           </video>
-          <p style="font-weight: bold; margin-top: 10px;">📌 Question 3</p>
+          <p>📌 Question 3</p>
+          <div class="recording-area" id="interview3-area">
+            <div class="record-control">
+              <button class="record-btn" onclick="startRecordingWithTimer('interview3', this)">🎤 开始录音回答</button>
+              <span class="countdown-timer" id="timer-interview3">00:45</span>
+            </div>
+          </div>
         </div>
         <div class="video-item">
           <video width="100%" controls>
             <source src="q4-interview.mp4" type="video/mp4">
           </video>
-          <p style="font-weight: bold; margin-top: 10px;">📌 Question 4</p>
+          <p>📌 Question 4</p>
+          <div class="recording-area" id="interview4-area">
+            <div class="record-control">
+              <button class="record-btn" onclick="startRecordingWithTimer('interview4', this)">🎤 开始录音回答</button>
+              <span class="countdown-timer" id="timer-interview4">00:45</span>
+            </div>
+          </div>
         </div>
       </div>
-
-      <button class="record-btn" onclick="startRecording(event, 'speaking_interview')" style="margin-top: 20px;">🎤 开始录音回答</button>
     </div>
 
     <div class="nav-buttons">
@@ -1630,21 +1742,22 @@
       });
     }
 
-    // ========== 录音功能 ==========
-    let mediaRecorder;
-    let audioChunks = [];
-    let recordingStream = null;
-    let currentQuestion = null;
+    // ========== 录音 + 45秒倒计时功能 ==========
+    let activeRecorders = {};           // 存储每个问题的 mediaRecorder, stream, timer 等
+    let activeTimerInterval = null;     // 全局仅允许一个录音计时器运行
 
-    async function startRecording(event, questionId) {
-      if (!event) event = window.event;
+    async function startRecordingWithTimer(questionId, btnElement) {
       if (examState.status !== 'active' && examState.status !== 'warning') {
         alert('考试未开始或已结束');
         return;
       }
-      
-      currentQuestion = questionId;
-      
+
+      // 如果已经有正在进行的录音，阻止新的录音
+      if (Object.keys(activeRecorders).length > 0) {
+        alert('请先结束当前录音');
+        return;
+      }
+
       try {
         if (!navigator.mediaDevices || !window.MediaRecorder) {
           alert('❌ 您的浏览器不支持录音功能。');
@@ -1652,10 +1765,8 @@
         }
 
         const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-        
-        recordingStream = stream;
-        mediaRecorder = new MediaRecorder(stream);
-        audioChunks = [];
+        const mediaRecorder = new MediaRecorder(stream);
+        const audioChunks = [];
 
         mediaRecorder.ondataavailable = (event) => {
           if (event.data.size > 0) {
@@ -1666,69 +1777,126 @@
         mediaRecorder.onstop = () => {
           const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
           const audioUrl = URL.createObjectURL(audioBlob);
-          
+
           examState.recordings.push({
             question: questionId,
             url: audioUrl,
             timestamp: new Date().toISOString()
           });
-          
-          const audioPlayer = document.createElement('audio');
-          audioPlayer.controls = true;
-          audioPlayer.src = audioUrl;
-          audioPlayer.style.width = '100%';
-          audioPlayer.style.marginTop = '15px';
-          
-          const activeButton = document.activeElement;
-          if (activeButton && activeButton.parentNode) {
-            activeButton.parentNode.insertBefore(audioPlayer, activeButton.nextSibling);
+
+          // 在对应区域下方生成音频播放器
+          const area = document.getElementById(`${questionId}-area`) || btnElement.closest('.recording-area');
+          if (area) {
+            const existingAudio = area.querySelector('audio');
+            if (existingAudio) existingAudio.remove();
+
+            const audioPlayer = document.createElement('audio');
+            audioPlayer.controls = true;
+            audioPlayer.src = audioUrl;
+            audioPlayer.style.width = '100%';
+            audioPlayer.style.marginTop = '15px';
+            area.appendChild(audioPlayer);
           }
-          
-          if (recordingStream) {
-            recordingStream.getTracks().forEach(track => track.stop());
-            recordingStream = null;
-          }
-          audioChunks = [];
+
+          // 清理流
+          stream.getTracks().forEach(track => track.stop());
+
+          // 清理 activeRecorders 条目
+          delete activeRecorders[questionId];
         };
 
+        // 开始录音
         mediaRecorder.start();
-        
-        const currentBtn = event.target;
-        currentBtn.textContent = '🔴 录音中...';
-        currentBtn.classList.add('recording');
-        currentBtn.disabled = true;
-        
-        const stopBtn = document.createElement('button');
-        stopBtn.textContent = '⏹️ 停止录音';
-        stopBtn.style.marginLeft = '10px';
-        stopBtn.style.background = '#666';
-        stopBtn.style.color = 'white';
-        stopBtn.style.border = 'none';
-        stopBtn.style.padding = '10px 20px';
-        stopBtn.style.borderRadius = '8px';
-        stopBtn.style.cursor = 'pointer';
-        stopBtn.onclick = stopRecording;
-        currentBtn.parentNode.insertBefore(stopBtn, currentBtn.nextSibling);
-        
+        activeRecorders[questionId] = {
+          mediaRecorder,
+          stream,
+          questionId
+        };
+
+        // 更新按钮状态
+        btnElement.textContent = '🔴 录音中...';
+        btnElement.classList.add('recording');
+        btnElement.disabled = true;
+
+        // 显示/创建停止按钮
+        let stopBtn = btnElement.parentNode.querySelector('.stop-btn');
+        if (!stopBtn) {
+          stopBtn = document.createElement('button');
+          stopBtn.textContent = '⏹️ 停止';
+          stopBtn.className = 'stop-btn';
+          stopBtn.onclick = () => stopRecording(questionId);
+          btnElement.parentNode.appendChild(stopBtn);
+        }
+
+        // 启动45秒倒计时 (更新对应的 timer 元素)
+        const timerSpan = document.getElementById(`timer-${questionId}`);
+        if (timerSpan) {
+          let secondsLeft = 45;
+          timerSpan.textContent = formatTime(secondsLeft);
+          timerSpan.classList.remove('warning');
+
+          if (activeTimerInterval) clearInterval(activeTimerInterval);
+          activeTimerInterval = setInterval(() => {
+            secondsLeft--;
+            if (secondsLeft >= 0) {
+              timerSpan.textContent = formatTime(secondsLeft);
+              if (secondsLeft <= 10) timerSpan.classList.add('warning');
+            }
+            if (secondsLeft < 0) {
+              // 时间到，自动停止录音
+              clearInterval(activeTimerInterval);
+              activeTimerInterval = null;
+              if (activeRecorders[questionId]) {
+                stopRecording(questionId);
+              }
+            }
+          }, 1000);
+        }
+
       } catch (err) {
         alert('录音失败: ' + err.message);
       }
     }
 
-    function stopRecording() {
-      if (mediaRecorder && mediaRecorder.state !== 'inactive') {
-        mediaRecorder.stop();
-        
-        const recordBtns = document.querySelectorAll('.record-btn');
-        recordBtns.forEach(btn => {
-          btn.textContent = '🎤 开始录音';
-          btn.classList.remove('recording');
-          btn.disabled = false;
-        });
-        
-        const stopBtns = document.querySelectorAll('button[onclick="stopRecording()"]');
-        stopBtns.forEach(btn => btn.remove());
+    function stopRecording(questionId) {
+      const rec = activeRecorders[questionId];
+      if (rec && rec.mediaRecorder && rec.mediaRecorder.state !== 'inactive') {
+        rec.mediaRecorder.stop();
       }
+
+      // 清理计时器
+      if (activeTimerInterval) {
+        clearInterval(activeTimerInterval);
+        activeTimerInterval = null;
+      }
+
+      // 重置按钮
+      const area = document.getElementById(`${questionId}-area`);
+      if (area) {
+        const recordBtn = area.querySelector('.record-btn');
+        const stopBtn = area.querySelector('.stop-btn');
+        if (recordBtn) {
+          recordBtn.textContent = '🎤 开始录音';
+          recordBtn.classList.remove('recording');
+          recordBtn.disabled = false;
+        }
+        if (stopBtn) stopBtn.remove();
+      }
+
+      // 重置计时器显示为 00:45
+      const timerSpan = document.getElementById(`timer-${questionId}`);
+      if (timerSpan) {
+        timerSpan.textContent = '00:45';
+        timerSpan.classList.remove('warning');
+      }
+
+      delete activeRecorders[questionId];
+    }
+
+    function formatTime(sec) {
+      const m = Math.floor(sec / 60).toString().padStart(2, '0');
+      const s = (sec % 60).toString().padStart(2, '0');
+      return `${m}:${s}`;
     }
 
     // ========== 折叠面板切换函数 ==========
